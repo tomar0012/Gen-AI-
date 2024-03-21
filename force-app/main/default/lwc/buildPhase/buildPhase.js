@@ -1,6 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import _executePrompt from '@salesforce/apex/SoftwareEngOptimizerController.executePrompt';
-import getUserStoriesData from '@salesforce/apex/SDLC_AnalysisController.getUserStoriesData';
+import _executePrompt from '@salesforce/apex/SoftwateEngOptimizerUtilityController.executePrompt';
+import getUserStoriesData from '@salesforce/apex/SDLC_BuildController.getUserStoriesData';
 import {SAVED_USER_STORY_COLUMNS,CREATE_APEX_PROMPT,CREATE_LWC_PROMPT,CREATE_TRIGGER_PROMPT,CREATE_CONFIG_WORKBOOK_PROMPT,codeOptions,configWorkbookOptions} from './buildConstant';
 export default class BuildPhase extends LightningElement {
 

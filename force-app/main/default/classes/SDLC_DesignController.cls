@@ -1,64 +1,30 @@
+/*
+*********************************************************
+@Class Name      : SDLC_BuildController
+@author          : COE Team - Sachin(1347061)
+@description     : This class handles various functionalities related to Design Phase
+********************************************************
+*/
 public with sharing class SDLC_DesignController {
-    
-
-    @AuraEnabled
-    public static List<SDLC_AnalysisController.UserStoryWrapper> insertComponentSpecResponse(Map<String,String> mapOfStoryIdWithUserInput,String prompt){
-
-        Boolean isSuccess = false;
-        List<SDLC_AnalysisController.UserStoryWrapper> userStoryWrapperList = new List<SDLC_AnalysisController.UserStoryWrapper>();
-        List<UserStory__c> updateUserStoryList = new List<UserStory__c>();
-        for(String userStoryId : mapOfStoryIdWithUserInput.keySet()){
-
-            String specResponse = SoftwareEngOptimizerController.executePrompt(prompt, 'Custom', mapOfStoryIdWithUserInput.get(userStoryId), null);
-            if(specResponse != null){
-                UserStory__c userStory = new UserStory__c();
-                userStory.Id = userStoryId;
-                userStory.ComponentSpec__c = specResponse;
-                updateUserStoryList.add(userStory);
-
-                SDLC_AnalysisController.UserStoryWrapper userStoryWrapper = new SDLC_AnalysisController.UserStoryWrapper();
-                userStoryWrapper.id = userStoryId;
-                userStoryWrapper.componentSpec = specResponse;
-                userStoryWrapperList.add(userStoryWrapper);
-            }
-        }
-        
-        if(!updateUserStoryList.isEmpty()){
-            update updateUserStoryList;
-        }
-        
-        return userStoryWrapperList;
-    }
-
-    @AuraEnabled
-    public static List<SDLC_AnalysisController.UserStoryWrapper> getUserStoryWithComponentSpec(List<String> userStoryIds){
-
-        List<UserStory__c> userStoryList = [SELECT Id, name, Title__c, User_Story__c, AcceptanceCriteria__c, ComponentSpec__c
-                                            FROM UserStory__c
-                                            WHERE Id=:userStoryIds];
-        List<SDLC_AnalysisController.UserStoryWrapper> userStoryWrapperList = new List<SDLC_AnalysisController.UserStoryWrapper>();
-        for(UserStory__c userStory : userStoryList) {
-            SDLC_AnalysisController.UserStoryWrapper userStoryWrapper = new SDLC_AnalysisController.UserStoryWrapper();
-            userStoryWrapper.title = userStory.Title__c;
-            userStoryWrapper.acceptanceCriteria = userStory.AcceptanceCriteria__c;
-            userStoryWrapper.name = userStory.name+'-'+userStoryWrapper.title;
-            userStoryWrapper.Id = userStory.Id;
-            userStoryWrapper.userStory = userStory.User_Story__c;
-            userStoryWrapper.componentSpec = userStory.ComponentSpec__c;
-            userStoryWrapperList.add(userStoryWrapper);
-        }
-        return userStoryWrapperList;
-    }
-    
+    /*
+    *********************************************************
+    @Method Name     : insertComponentSpecificationRecord
+    @author          : COE - Sachin
+    @description     : Insert Component spec for user stories and create Junction Object
+    @param prompt    : The prompt to execute.
+    @param inputType : user Story Ids and Formatted Component Spec (HTML)
+    @return          : True if Dml insertion of records else false
+    ********************************************************
+    */ 
     @AuraEnabled
     public static Boolean insertComponentSpecificationRecord(List<String> userStoryIds, String formattedResponse){
         
         String relatedStories='';
-        List<UserStory__c> usUpdateList = New List<UserStory__c>();
-        
+        List<User_Stories_Component_Spec__c> usComSpecToUpdateList = New List<User_Stories_Component_Spec__c>();
+
         List<UserStory__c> userStoryList = [SELECT Id, Name, Title__c
                                             FROM UserStory__c
-                                            WHERE Id=:userStoryIds];
+                                            WHERE Id=:userStoryIds LIMIT 200];
         
         for(UserStory__c currentStory : userStoryList){
             relatedStories += currentStory.Name +'-'+currentStory.Title__c +';';
@@ -70,22 +36,22 @@ public with sharing class SDLC_DesignController {
         
         try{
             insert compSpec;
-            
-            //code to update user stories with their component spec obeject : 20-03-2024
+            //CODE TO CREATE JUCTION OBJECT : 19-03-2024
             for(UserStory__c currentStory : userStoryList){
-                UserStory__c usObj = New UserStory__c();
-                usObj.Id = currentStory.Id;
-                usObj.Component_Specification__c = compSpec.Id;
-                usUpdateList.add(usObj);
+                User_Stories_Component_Spec__c junctionObj = New User_Stories_Component_Spec__c();
+                junctionObj.Component_Specification__c = compSpec.Id;
+                junctionObj.User_Story__c = currentStory.Id;
+                usComSpecToUpdateList.add(junctionObj);
             }
-            if(usUpdateList.size()>0){
-                update usUpdateList;
+            if(usComSpecToUpdateList.size()>0){
+                Insert usComSpecToUpdateList;
                 return true;
-            }
+            }   
         }
         catch(Exception e){
             return false;
         }
+
         return false;
     }
 }

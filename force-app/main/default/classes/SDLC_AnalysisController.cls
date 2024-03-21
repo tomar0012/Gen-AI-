@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : Gokul Sriram
+ * @group             : 
+ * @last modified on  : 03-21-2024
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
 public with sharing class SDLC_AnalysisController {
 
     @AuraEnabled
@@ -14,7 +21,7 @@ public with sharing class SDLC_AnalysisController {
         }
         insert userStoryToInsert;
     }
-   
+
     @AuraEnabled
     public static List<UserStoryWrapper> getSavedUserStories(String epicId){
         system.debug('generate-epicId==>'+epicId);
@@ -38,7 +45,7 @@ public with sharing class SDLC_AnalysisController {
             return null;
         }
     }
-
+   
     /*Create a wrapper class for User Story with two fields title and AcceptanceCriteria*/
     public class UserStoryWrapper {
         @AuraEnabled
@@ -55,70 +62,7 @@ public with sharing class SDLC_AnalysisController {
         public String componentSpec { get; set; }
     }
 
-    @AuraEnabled
-    public static List<Map<String, Object>> getUserStoriesData(String epicId){
-        
-        List<Map<String, Object>> dataMap = new  List<Map<String, Object>>();
-        Map<String, List<UserStory__c>> comSpecUserStoryMap = New Map<String, List<UserStory__c>>();
-        Map<String,ComponentSpecification__c> comSpecMap = new Map<String,ComponentSpecification__c> ();
-        set<Id> comSpecIds = new set<Id>();
-        List<UserStory__c> userStoryList = New List<UserStory__c> ();
-      
-        userStoryList = [SELECT Id, Name, Epic__c, Formatted_Name__c, Component_Specification__c, Component_Specification__r.Name
-                         FROM UserStory__c 
-                         WHERE  Epic__c =:epicId Order by CreatedDate Desc LIMIT 200];
-        
-        if(userStoryList.size()>0){
-            
-            for(UserStory__c thisUS : userStoryList){
-                if(thisUS.Component_Specification__c != null){
-                    comSpecIds.add(thisUS.Component_Specification__c);   
-                }
-                if(comSpecUserStoryMap.ContainsKey(thisUS.Component_Specification__c) &&
-                  thisUS.Component_Specification__c != null){
-                      comSpecUserStoryMap.get(thisUS.Component_Specification__c).add(thisUS);
-                  }
-                else if(thisUS.Component_Specification__c != null){
-                    comSpecUserStoryMap.put(thisUS.Component_Specification__c ,new list<UserStory__c>{thisUS});
-                }
-            }
-            IF(comSpecIds.size()>0){
-                comSpecMap = New Map<String,ComponentSpecification__c>([SELECT Id, Name, FormattedSpecification__c FROM ComponentSpecification__c WHERE Id =:comSpecIds ]);
-            }
-            String Hyperlink_Us='';
-            String Hyperlink_Cs='';
-            
-            for(String thisComSpecId : comSpecUserStoryMap.Keyset()){
-               
-                Map<String, Object> summaryMap = new Map<String, Object>();
-                Hyperlink_Us='';
-                Hyperlink_Cs='';
-                Hyperlink_Cs = '<a href="/'+thisComSpecId+'" target="_blank">'+  comSpecMap.get(thisComSpecId).Name +'</a><br>';
-                
-                summaryMap.put('Component_Spec_Link', Hyperlink_Cs);
-                for(UserStory__c thisUS : comSpecUserStoryMap.get(thisComSpecId)){
-                   Hyperlink_Us += '<a href="/'+thisUS.Id+'" target="_blank">'+thisUS.Formatted_Name__c+'</a><br>'; 
-                }
-               summaryMap.put('name', Hyperlink_Us);
-               summaryMap.put('FormattedSpecification__c',comSpecMap.get(thisComSpecId).FormattedSpecification__c);
-               dataMap.add(summaryMap);
-            }
-        }
-        system.debug('dataMap 2 ==>'+dataMap); 
-        return dataMap;
-    }
 
-    private static List<Id> getRecordbyName(List<UserStory__c> users, String name){
-       List<Id> matchingId = new List<Id>();
-       String partial = name.substring(0,7); 
-        for (UserStory__c user:users){
-            if(user.Name.startsWith(partial)){
-                matchingId.add(user.Id);
-            }
-        }
-        return matchingId;
-    }
-    
     /*
     *********************************************************
     @Method Name    : getConfigurationDetails
@@ -156,37 +100,7 @@ public with sharing class SDLC_AnalysisController {
 
         return configurationWrapperList;
     }
-
-    /*@AuraEnabled(cacheable=true)
-    public static List<PromptLibrary__c> getPromptsPerPhase(String phaseType, String searchKey){
-
-        //String key = '%'+searchKey+'%';
-        String key = searchKey.toLowerCase();
-        List<PromptLibrary__c> promptPerPhaseList = new List<PromptLibrary__c>();
-
-        for(PromptLibrary__c currentRecord : [Select Id
-                                                    , Name
-                                                    , Prompt__c
-                                                    , PromptType__c
-                                                    , Phase__c
-                                                    , Entity__c
-                                                    , Industry__c
-                                                    , OutputType__c
-                                                    , ModelName__c
-                                                    , PromptComplexity__c
-                                                    , OutputQuality__c 
-                                                FROM PromptLibrary__c
-                                                WHERE Phase__c =: phaseType]){
-
-            String prompt = currentRecord.Prompt__c.toLowerCase();                                      
-            if(prompt.contains(key)){
-                promptPerPhaseList.add(currentRecord);
-            }
-        }
-        
-        return promptPerPhaseList;
-    }*/
-
+    
     public class ConfigurationWrapper{
 
         @AuraEnabled public String configName;
