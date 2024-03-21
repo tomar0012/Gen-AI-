@@ -10,66 +10,6 @@ public with sharing class SoftwareEngOptimizerController {
     static Map<String, String> promptMap = new Map<String, String>{'1'=>'Create a user story from the requirement'};
    
    
-    /*
-    *********************************************************
-    @Method Name     : executePrompt
-    @author         : COE
-    @description    : Executes a prompt based on input type and user input, and returns the response.
-    @param prompt    : The prompt to execute.
-    @param inputType : The type of input (Custom, CSV, etc.).
-    @param userInput : User input for the prompt.
-    @param inputFile : File input if applicable.
-    @return          : The response to the prompt.
-    ********************************************************
-    */ 
-    @AuraEnabled
-    public static String executePrompt(String prompt,String inputType,String userInput,Object inputFile){
-        system.debug('inputType==>'+inputType+'userInput==>'+userInput);
-
-        String context;
-        if(inputType=='Custom'){
-            context=userInput;
-        }else if(inputType == 'CSV'){
-            context = processCSV((String)inputFile);
-        }else{
-            FileInfo fileData = (FileInfo)JSON.deserialize(JSON.serialize(inputFile), FileInfo.class);
-            system.debug('<==fileData==>'+fileData);
-            if(fileData.Title.contains('.doc')){
-                context = EncodingUtil.base64Encode(fileData.VersionData);
-                system.debug('context1==>'+context);
-
-            }else{
-            context=fileData.VersionData.toString();
-            system.debug('context2==>'+context);
-            }
-        }
-        List<Object> promptList = new List<Object>();
-        AIHelper.addPrompt(promptList,'system','Hi, I am your SOftware Engineering Assistant.');
-        AIHelper.addPrompt(promptList,'user',context);
-        AIHelper.addPrompt(promptList,'user',prompt);
-        String requestBody=AIHelper.createRequestBody(promptList);
-        system.debug('requestBody==>'+requestBody);
-        HttpRequest req=AIHelper.createHTTPRequest();
-        req.setBody(requestBody);
-
-        try{
-            HttpResponse response = new Http().send(req);
-
-            system.debug('response '+ response.getBody());
-         
-            if(response.getStatusCode() == 200) {
-            return AIHelper.extractResponse(response.getBody());
-            } else if(response.getStatusCode() == 503) {
-                return 'Error';
-            }
-            else{
-                return 'Error';
-            }
-        }catch(Exception e){
-            return 'Error';
-        }
-       
-    }
     
     /*
     *********************************************************
