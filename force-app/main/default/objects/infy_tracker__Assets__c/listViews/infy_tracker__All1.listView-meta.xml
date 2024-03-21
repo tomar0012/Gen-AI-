@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>infy_tracker__All1</fullName>
+    <columns>NAME</columns>
+    <columns>infy_tracker__Quarter__c</columns>
+    <columns>infy_tracker__Team__c</columns>
+    <columns>infy_tracker__Category__c</columns>
+    <columns>infy_tracker__Asset_Sub_Category__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>infy_tracker__Asset_Status__c</columns>
+    <columns>infy_tracker__Curator__c</columns>
+    <columns>infy_tracker__Submitted_By__c</columns>
+    <columns>infy_tracker__Asset_URL__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Details</label>
+</ListView>

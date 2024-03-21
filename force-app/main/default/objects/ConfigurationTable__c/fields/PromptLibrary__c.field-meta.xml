@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PromptLibrary__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Prompt Library</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>$Source.Phase__c</field>
+            <operation>equals</operation>
+            <valueField>PromptLibrary__c.Phase__c</valueField>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>PromptLibrary__c</referenceTo>
+    <relationshipLabel>Configuration Tables</relationshipLabel>
+    <relationshipName>Configuration_Tables</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,22 @@
+.circle {
+    --slds-c-button-radius-border: 40%;
+}
+
+.flex-container{
+    display:flex;
+    flex-direction:row;
+}
+
+.textarea{
+    --sds-c-textarea-sizing-min-height:100px;
+    width:100%;
+}
+.my-icon{
+    height:10px;
+    width:10px;
+}
+
+.button-highlighter{
+    box-shadow: 2px 2px 4px rgba(85, 3, 192, 0.2);
+    border:0.1px solid  rgba(85, 3, 192, 0.2);
+}

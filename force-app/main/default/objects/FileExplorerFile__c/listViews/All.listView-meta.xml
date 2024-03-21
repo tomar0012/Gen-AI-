@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>ContentDocumentId__c</columns>
+    <columns>Folder__c</columns>
+    <columns>Tags__c</columns>
+    <columns>Label__c</columns>
+    <columns>FileType__c</columns>
+    <columns>FileExtension__c</columns>
+    <columns>FileOwner__c</columns>
+    <columns>ContentSize__c</columns>
+    <columns>LinkedEntityId__c</columns>
+    <columns>OBJECT_ID</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <columns>IsDeleted__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

@@ -1,0 +1,136 @@
+<template>
+    <lightning-radio-group name="radioGroup1" label="" options={analysisOption} onchange={analysisOptionChange}
+        value={value} type="radio">
+    </lightning-radio-group>
+
+    <template if:true={genUserStories}>
+        <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+        <div class="slds-form" style="margin-top: 20px;">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-size_6-of-6">
+                    <lightning-radio-group name="radioGroup2" label="Input Format" options={inputFormatOptions}
+                        onchange={handleinputFormatOptionChange} value={selectedinputFormatOption}
+                        type="button"></lightning-radio-group>
+                </div>
+                <div class="slds-size_3-of-6">
+
+                    <div class="slds-form-element slds-form-element_stacked" lwc:if={isFileFormat}>
+
+                        <label class="slds-form-element__label" for="stacked-input-id-01">Upload Transcript</label>
+                        <div class="slds-form-element__control">
+                            <input type="file" label="" onchange={handleFileChanges} name="file"
+                                class="slds-input"></input>
+
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-form-element_stacked" lwc:elseif={isCustomInputFormat}>
+
+                        <lightning-textarea onchange={userInputChanged}
+                            label="Enter business requirement"></lightning-textarea>
+                    </div>
+                </div>
+                <div class="slds-grid slds-wrap slds-var-p-top_large slds-p-left_x-small">
+                    <div class="slds-col slds-size_1-of-3 slds-p-right_small">
+                        <lightning-input type="toggle" label="Explain" onchange={handleExplain}
+                            checked={explainChecked}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_2-of-3 slds-p-right_small">
+                        <lightning-button label="Generate User Story(ies)" variant="brand"
+                            onclick={executeUserStoryGenerationPrompt} id="elementAnalysis"></lightning-button> &nbsp;
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="slds-size_6-of-6" if:true={storyGenerated}>
+                    <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+                    <lightning-card title={lenGeneratedUserStories}>
+                        <div slot="actions" style="display:flex;flex-direction:row">
+                            <div class="slds-p-right_x-small slds-p-top_small">
+                                <lightning-button variant="brand" label="Save User Stories"
+                                    onclick={saveSelectedUserStories} class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                            <div>
+                                <template lwc:if={showFeedback}><c-feedback-component llm-id={analysisLLMId}
+                                        prompt-id={analysisPromptId}></c-feedback-component></template>
+                            </div>
+                        </div>
+
+                        <c-sdlc-datatable key-field="id" data={generatedUserStories} show-row-number-column="true"
+                            onrowselection={getSelectedRows} row-number-offset="0" column-widths-mode="fixed"
+                            columns={generatedUserStorycolumns}>
+                        </c-sdlc-datatable>
+                    </lightning-card>
+                </div>
+
+                <div class="slds-size_6-of-6 slds-p-top_small" lwc:if={hasSavedUserStories}>
+                    <lightning-card title="Saved User Stories">
+                        <lightning-button slot="actions" variant="brand" label="Export" class="slds-m-left_x-small"
+                            onclick={exportSavedUserStory} disabled={disableExport}></lightning-button>
+                        <c-sdlc-datatable key-field="id" data={trimmedSavedUserStories} show-row-number-column="true"
+                            onrowselection={getSavedSelectedRows} row-number-offset="0" column-widths-mode="fixed"
+                            columns={savedUserStorycolumns}>
+                        </c-sdlc-datatable>
+                    </lightning-card>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+    <template if:true={valUserStories}>
+        <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+        <div class="slds-form" style="margin-top: 20px;">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-size_6-of-6">
+                    <lightning-radio-group name="radioGroup3" label="Input Format"
+                        options={inputFormatOptionsForValidation} onchange={handleinputFormatOptionChange}
+                        value={selectedinputFormatOption} type="button"></lightning-radio-group>
+                </div>
+                <div class="slds-size_2-of-6">
+
+                    <div class="slds-form-element slds-form-element_stacked" lwc:if={isFileFormat}>
+
+                        <label class="slds-form-element__label" for="stacked-input-id-01">Upload your document
+                            here</label>
+                        <div class="slds-form-element__control">
+                            <input type="file" label="" onchange={handleFileChanges} name="file"
+                                class="slds-input"></input>
+
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-form-element_stacked" lwc:elseif={isCustomInputFormat}>
+
+                        <lightning-textarea onchange={userInputChanged}
+                            label="Enter User Story(ies)"></lightning-textarea>
+                    </div>
+                </div>
+                <span class="slds-size_0.5-of-6 slds-var-p-top_large slds-p-right_small">
+                    <lightning-input type="toggle" label="Explain" onchange={handleValidateExplain}
+                        checked={isValidateExplain}></lightning-input>
+                </span>
+                <span class="slds-size_1-of-6 slds-var-p-top_large">
+                    <lightning-button label="Requirement Quality Assessment" variant="brand"
+                        onclick={executeValidationPrompt} id="elementValidate"></lightning-button> &nbsp;&nbsp;
+                </span>
+                <template if:true={validatedResponse}>
+                    <div class="slds-size_1-of-6" style="display: flex;flex-direction:row">
+                        <div class="slds-var-p-top_large slds-p-right_x-small"><lightning-button label="Export"
+                                variant="brand" onclick={exportValidatedResponse} icon-name="utility:download">
+                            </lightning-button></div>
+                        <div class="slds-var-p-top_medium">
+                            <template lwc:if={showFeedback}><c-feedback-component llm-id={analysisLLMId}
+                                    prompt-id={analysisPromptId}></c-feedback-component></template>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="slds-size_6-of-6 slds-p-top_medium">
+                    <div class="slds-box">
+                        <lightning-formatted-rich-text value={validatedResponse}></lightning-formatted-rich-text>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </template>
+
+</template>

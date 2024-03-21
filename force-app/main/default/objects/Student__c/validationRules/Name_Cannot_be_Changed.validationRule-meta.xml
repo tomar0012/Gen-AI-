@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Name_Cannot_be_Changed</fullName>
+    <active>true</active>
+    <errorConditionFormula>!ISNEW() &amp;&amp; ISCHANGED(Name__c)</errorConditionFormula>
+    <errorDisplayField>Name__c</errorDisplayField>
+    <errorMessage>Name cannot be changed once created</errorMessage>
+</ValidationRule>

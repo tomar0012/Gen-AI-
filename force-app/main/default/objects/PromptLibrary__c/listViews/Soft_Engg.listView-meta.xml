@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Soft_Engg</fullName>
+    <columns>NAME</columns>
+    <columns>Prompt__c</columns>
+    <columns>OutputType__c</columns>
+    <columns>OutputQuality__c</columns>
+    <columns>ModelName__c</columns>
+    <columns>Phase__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>PromptType__c</field>
+        <operation>equals</operation>
+        <value>Software Engineering</value>
+    </filters>
+    <label>Soft Engg</label>
+</ListView>

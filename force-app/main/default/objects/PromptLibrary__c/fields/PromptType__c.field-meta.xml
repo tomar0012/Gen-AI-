@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PromptType__c</fullName>
+    <externalId>false</externalId>
+    <label>Prompt Type</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Software Engineering</fullName>
+                <default>false</default>
+                <label>Software Engineering</label>
+            </value>
+            <value>
+                <fullName>Business Capability</fullName>
+                <default>false</default>
+                <label>Business Capability</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

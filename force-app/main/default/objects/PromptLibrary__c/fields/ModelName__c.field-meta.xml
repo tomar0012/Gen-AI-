@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ModelName__c</fullName>
+    <externalId>false</externalId>
+    <label>LLM</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>EinsteinGPT</fullName>
+                <default>false</default>
+                <label>EinsteinGPT</label>
+            </value>
+            <value>
+                <fullName>OpenAI ChatGPT</fullName>
+                <default>false</default>
+                <label>OpenAI ChatGPT</label>
+            </value>
+            <value>
+                <fullName>AzureGPT</fullName>
+                <default>false</default>
+                <label>AzureGPT</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

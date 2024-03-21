@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Btech_Student</fullName>
+    <active>true</active>
+    <compactLayoutAssignment>Student_View</compactLayoutAssignment>
+    <label>Btech Student</label>
+    <picklistValues>
+        <picklist>Department__c</picklist>
+        <values>
+            <fullName>Civil</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Computer Science</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mechanical</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

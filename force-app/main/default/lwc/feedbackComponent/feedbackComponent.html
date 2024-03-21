@@ -1,0 +1,58 @@
+<template>
+    <div style="width:200px;height:50px;padding:5px;border: 0.25px solid #000;">
+        <div class="flex-container" style="padding-left:10px">
+            <b class="slds-p-right_xxx-small" style="font-size:14px;margin-top:7px">Feedback:</b>
+            <div class="slds-p-right_xxx-small">
+                <button class="slds-button" onclick={handleButtonClick} data-id="Positive">
+                    <lightning-icon icon-name="utility:smiley_and_people" title="Positive"></lightning-icon>
+                    <span class="slds-assistive-text">Happy</span>
+                </button>
+            </div>
+            <div class="slds-p-right_xxx-small">
+                <button class="slds-button" onclick={handleButtonClick} data-id="Neutral">
+                    <lightning-icon icon-name="utility:sentiment_neutral" title="Neutral"></lightning-icon>
+                    <span class="slds-assistive-text">Neutral</span>
+                </button>
+            </div>
+            <div class="slds-p-right_xxx-small">
+                <button class="slds-button" onclick={handleButtonClick} data-id="Negative">
+                    <lightning-icon icon-name="utility:sentiment_negative" title="Negative"></lightning-icon>
+                    <span class="slds-assistive-text">Sad</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <template lwc:if={showPopup}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        <span style="font-size:20px;font-weight:bold" class="slds-p-top_small">FEEDBACK</span>
+                    </h2>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-p-left_xx-small">
+                        <b style="font-size:15px;color:green">Thank you, we have recorded your response.</b><br/>
+                        <span style="font-size:12px;">Additionally, would you like to provide insights on your response?</span><br/>
+                    </div>
+                    <lightning-record-edit-form object-api-name={feedbackObject} record-id={recordId}>
+                        <lightning-input-field field-name={responseField} value={responseValue} disabled> </lightning-input-field>
+                        <lightning-input-field field-name={responseFeedbackField} value={responseFeedbackValue} onchange={handleResponseFeedback}> </lightning-input-field>
+                        <template lwc:if={showCommentSection}><lightning-input-field field-name={comments} onchange={handleComments}> </lightning-input-field></template>
+                        <div class="slds-var-m-top_medium" style="text-align:center">
+                            <lightning-button class="slds-p-right_x-small" variant="brand" label="Save" onclick={handleSubmit}>
+                            </lightning-button>
+                            <lightning-button variant="neutral" label="Cancel" onclick={handleClose}>
+                            </lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+</template>

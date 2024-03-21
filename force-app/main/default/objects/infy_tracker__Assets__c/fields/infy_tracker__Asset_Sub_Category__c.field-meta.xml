@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>infy_tracker__Asset_Sub_Category__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Asset Sub Category</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>infy_tracker__Category__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Industry Vertical / Sub-vertical</fullName>
+                <default>false</default>
+                <label>Industry Vertical / Sub-vertical</label>
+            </value>
+            <value>
+                <fullName>Horizontal Business Capabilities</fullName>
+                <default>false</default>
+                <label>Horizontal Business Capabilities</label>
+            </value>
+            <value>
+                <fullName>Monetizable/Horizontal Tech Solution</fullName>
+                <default>false</default>
+                <label>Monetizable/Horizontal Tech Solution</label>
+            </value>
+            <value>
+                <fullName>Cross Industry Business Assets</fullName>
+                <default>false</default>
+                <label>Cross Industry Business Assets</label>
+            </value>
+            <value>
+                <fullName>(Engineering) Frameworks</fullName>
+                <default>false</default>
+                <label>(Engineering) Frameworks</label>
+            </value>
+            <value>
+                <fullName>Platform Services</fullName>
+                <default>false</default>
+                <label>Platform Services</label>
+            </value>
+            <value>
+                <fullName>AI/ML Models</fullName>
+                <default>false</default>
+                <label>AI/ML Models</label>
+            </value>
+            <value>
+                <fullName>BOTs</fullName>
+                <default>false</default>
+                <label>BOTs</label>
+            </value>
+            <value>
+                <fullName>Code Snippets</fullName>
+                <default>false</default>
+                <label>Code Snippets</label>
+            </value>
+            <value>
+                <fullName>Tools</fullName>
+                <default>false</default>
+                <label>Tools</label>
+            </value>
+            <value>
+                <fullName>(Knowledge) Frameworks</fullName>
+                <default>false</default>
+                <label>(Knowledge) Frameworks</label>
+            </value>
+            <value>
+                <fullName>Solution Capability Models</fullName>
+                <default>false</default>
+                <label>Solution Capability Models</label>
+            </value>
+            <value>
+                <fullName>Reference Architecture</fullName>
+                <default>false</default>
+                <label>Reference Architecture</label>
+            </value>
+            <value>
+                <fullName>Process Maps/ Models</fullName>
+                <default>false</default>
+                <label>Process Maps/ Models</label>
+            </value>
+            <value>
+                <fullName>Project Docs</fullName>
+                <default>false</default>
+                <label>Project Docs</label>
+            </value>
+            <value>
+                <fullName>ProposalsLarge Deal Submissions</fullName>
+                <default>false</default>
+                <label>ProposalsLarge Deal Submissions</label>
+            </value>
+            <value>
+                <fullName>Case Studies</fullName>
+                <default>false</default>
+                <label>Case Studies</label>
+            </value>
+            <value>
+                <fullName>Kshop</fullName>
+                <default>false</default>
+                <label>Kshop</label>
+            </value>
+            <value>
+                <fullName>BTN</fullName>
+                <default>false</default>
+                <label>BTN</label>
+            </value>
+            <value>
+                <fullName>Methodologies</fullName>
+                <default>false</default>
+                <label>Methodologies</label>
+            </value>
+            <value>
+                <fullName>Approaches</fullName>
+                <default>false</default>
+                <label>Approaches</label>
+            </value>
+            <value>
+                <fullName>Best Practices</fullName>
+                <default>false</default>
+                <label>Best Practices</label>
+            </value>
+            <value>
+                <fullName>Webinars &amp; Lectures</fullName>
+                <default>false</default>
+                <label>Webinars &amp; Lectures</label>
+            </value>
+            <value>
+                <fullName>Tech/Functional Byes</fullName>
+                <default>false</default>
+                <label>Tech/Functional Byes</label>
+            </value>
+            <value>
+                <fullName>Process Documents</fullName>
+                <default>false</default>
+                <label>Process Documents</label>
+            </value>
+            <value>
+                <fullName>Article</fullName>
+                <default>false</default>
+                <label>Article</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

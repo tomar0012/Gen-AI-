@@ -1,0 +1,90 @@
+<template>
+    <lightning-card title="View/ Update LLM Configuration">     
+         <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                <thead>
+        
+                    <tr>
+                        <th><input type="checkbox" name="selectAll" id="selectAll" /></th>
+                        <th>
+                            Phase
+                        </th>
+                        <th>
+                            Category
+                        </th>
+                        <th>
+                            Sub Category
+                        </th>
+                        <th>
+                            LLM
+                        </th>
+                        <th>
+                            Usage Popularity (%)
+                        </th>
+                        <th>
+                            Feedback Score
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={llmConfigDataList} for:item="llmconfig" for:index="i">
+                        <tr key={llmconfig.Id}>
+                            <td><input type="checkbox"></input></td>
+                            <td>{llmconfig.phase}</td>
+                            <td>{llmconfig.category}</td>
+                            <td>{llmconfig.subCategory}</td>
+                            <td> 
+                              <!--  <select class="slds-select" name = "optionSelect" data-item={i} onchange={onllmselection}>
+                                <option value="GPT3.5 Turbo">GPT3.5 Turbo</option>
+                                <option value="GPT3.5">GPT4.0 Turbo</option>
+                                <option value="Codegen">Codegen</option>
+                              </select>-->
+                            <lightning-select
+                                 name={i}
+                                variant="label-hidden"
+                                value={llmconfig.llm}
+                                options={llmconfig.llmoptions}
+                                onchange={onllmselectionv}
+                                required ></lightning-select>
+                            </td>
+                            <td> 
+                               {llmconfig.popularity}
+                            </td>
+                            <td> 
+                                {llmconfig.rating}
+                            </td>
+                        </tr>
+                    </template>
+                   <!--  <tr>
+                        <td><input type="checkbox"></input></td>
+                        <td>Analysis</td>
+                        <td>Generate User Stories</td>
+                        <td>Text</td>
+                       
+                        <td> 
+                            <select class="slds-select" id="select-01">
+                            <option value="">GPT3.5 Turbo</option>
+                            <option value="">GPT4.0 Turbo</option>
+                          </select>
+                        </td>
+                        <td> 
+                           90%
+                        </td>
+                        <td> 
+                           
+                        </td>
+                     </tr>-->
+                </tbody>
+            </table>
+            <!--card footer-->
+
+            <div class="slds-grid slds-wrap"> 
+                <div class="slds-size_6-of-6">
+                    <div class="slds-float_right slds-p-around_small">
+                        <lightning-button variant="brand" label="Save Configuration"></lightning-button>
+                    </div>
+                </div>
+            </div>
+           
+
+    </lightning-card>
+</template>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Component_Specification__c</fullName>
+    <externalId>false</externalId>
+    <label>Component Specification</label>
+    <referenceTo>ComponentSpecification__c</referenceTo>
+    <relationshipLabel>User Stories Component Specs</relationshipLabel>
+    <relationshipName>User_Stories_Component_Specs</relationshipName>
+    <relationshipOrder>1</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

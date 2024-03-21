@@ -1,0 +1,43 @@
+<template>
+    <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+    <div class="slds-grid slds-wrap">
+        
+        <div class="slds-col slds-size_6-of-12 slds-p-around_small">
+            <lightning-card title="Requirements" class="slds-p-around_xxx-small">
+                <div slot="actions" class="slds-grid">
+                    <div class="slds-col"><lightning-input type="toggle" label="Explain" onchange={handleExplain} checked={explainChecked}></lightning-input></div>
+                    <div class="slds-col"><lightning-button slot="actions" variant="brand" label="Create Component Spec" onclick={createDesign} class="slds-m-left_x-small"></lightning-button></div>
+                </div>       
+                <div style="height:600px">
+                    <c-sdlc-datatable
+                    key-field="id"
+                    data={savedUserStories}
+                    show-row-number-column="true"
+                    onrowselection={getSelectedRows}
+                    row-number-offset="0"
+                    column-widths-mode="fixed"
+                    columns={savedUserStorycolumns}>
+                </c-sdlc-datatable>
+                </div>
+        </lightning-card>
+        </div>
+        <div class="slds-size_6-of-12 slds-p-around_small">
+            <div class="slds-scrollable_x slds-size_2-of-2" style="margin-top:18.5px">
+                <lightning-card title="Component Specification">
+                    <div slot="actions" style="display:flex;flex-direction:row;">
+                        <div class="slds-p-top_small"><lightning-button variant="brand" label="Save The Spec" onclick={saveComponentSpec} class="slds-p-around_x-small" ></lightning-button></div>
+                        <div><template lwc:if={showFeedback}><c-feedback-component llm-id={designLLMId} prompt-id={designPromptId}></c-feedback-component></template></div>
+                    </div>
+                    
+                    <template lwc:if={showDesignTable}>
+                        <div class="slds-p-around_medium" >
+                            <lightning-formatted-rich-text value={formattedText}>
+                            </lightning-formatted-rich-text>
+                        </div>
+                    </template>
+                </lightning-card>
+            </div>
+        </div>
+    </div>
+   
+</template>

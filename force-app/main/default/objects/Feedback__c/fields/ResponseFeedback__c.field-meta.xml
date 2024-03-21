@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ResponseFeedback__c</fullName>
+    <externalId>false</externalId>
+    <label>Response Feedback</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Response__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Response is well formatted</fullName>
+                <default>false</default>
+                <label>Response is well formatted</label>
+            </value>
+            <value>
+                <fullName>Response covered all requirements</fullName>
+                <default>false</default>
+                <label>Response covered all requirements</label>
+            </value>
+            <value>
+                <fullName>Explanations are relevant</fullName>
+                <default>false</default>
+                <label>Explanations are relevant</label>
+            </value>
+            <value>
+                <fullName>Response is not well formatted</fullName>
+                <default>false</default>
+                <label>Response is not well formatted</label>
+            </value>
+            <value>
+                <fullName>Response does not cover all requirements</fullName>
+                <default>false</default>
+                <label>Response does not cover all requirements</label>
+            </value>
+            <value>
+                <fullName>Explanations are not relevant</fullName>
+                <default>false</default>
+                <label>Explanations are not relevant</label>
+            </value>
+            <value>
+                <fullName>Some of the requirements are not covered</fullName>
+                <default>false</default>
+                <label>Some of the requirements are not covered</label>
+            </value>
+            <value>
+                <fullName>Response can be much better</fullName>
+                <default>false</default>
+                <label>Response can be much better</label>
+            </value>
+            <value>
+                <fullName>Others</fullName>
+                <default>false</default>
+                <label>Others</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Positive</controllingFieldValue>
+            <valueName>Response is well formatted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Positive</controllingFieldValue>
+            <valueName>Response covered all requirements</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Positive</controllingFieldValue>
+            <valueName>Explanations are relevant</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Positive</controllingFieldValue>
+            <controllingFieldValue>Neutral</controllingFieldValue>
+            <controllingFieldValue>Negative</controllingFieldValue>
+            <valueName>Others</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Neutral</controllingFieldValue>
+            <valueName>Some of the requirements are not covered</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Neutral</controllingFieldValue>
+            <valueName>Response can be much better</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negative</controllingFieldValue>
+            <valueName>Response is not well formatted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negative</controllingFieldValue>
+            <valueName>Response does not cover all requirements</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negative</controllingFieldValue>
+            <valueName>Explanations are not relevant</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

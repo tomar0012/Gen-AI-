@@ -1,0 +1,40 @@
+<template>
+    <lightning-tabset variant="Scoped">
+        <lightning-tab label="Start" onactive={handleActive} value="Start">
+            <c-setup-phase  onsave={handleSave} onavatarchange={handleAvatar} onrendered={handleRender}></c-setup-phase>
+        </lightning-tab>
+        <lightning-tab label="Analysis" onactive={handleActive}>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-analysis-phase onuserstorysave={refreshUserStory} saved-user-stories={savedUserStories} tab-label={tabLabel} epic-id={epicID}></c-analysis-phase>
+        </lightning-tab>
+        <lightning-tab label="Design" onactive={handleActive}>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-design-phase saved-user-stories={savedUserStories} tab-label={tabLabel}></c-design-phase>
+        </lightning-tab>
+       
+        <lightning-tab label="Build" onactive={handleActive}>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue} received-epic={epicID}></c-sldc-banner>
+            <c-build-phase saved-user-stories={savedUserStories} received-epic={epicID}></c-build-phase>
+        </lightning-tab>
+
+        <lightning-tab label="Test" onactive={handleActive}>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-test-phase saved-user-stories={savedUserStories}></c-test-phase>
+        </lightning-tab>
+
+        <lightning-tab label="Deploy" onactive={handleActive}>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-deploy-phase></c-deploy-phase>
+        </lightning-tab>
+
+        <lightning-tab label="Business Process Extraction" onactive={handleActive}>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-business-process-extraction-phase></c-business-process-extraction-phase>
+        </lightning-tab>
+
+        <lightning-tab label="Code Optimization" onactive={handleActive}>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-code-optimization-phase></c-code-optimization-phase>
+        </lightning-tab>
+    </lightning-tabset>
+</template>
