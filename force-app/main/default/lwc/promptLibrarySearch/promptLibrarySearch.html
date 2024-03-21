@@ -1,0 +1,58 @@
+<template>
+    <div class="slds-card slds-p-around_small slds-box">
+        <div class="slds-grid slds-wrap">
+            <lightning-radio-group
+                    label="Choose the Prompt Type:"
+                    options={filterPromptTypeValues}
+                    value={selectedPromptType}
+                    onchange={handlePromptType}></lightning-radio-group>
+        </div>
+        <div  class="slds-grid slds-wrap">
+            <template lwc:if={showSEBox}>
+                <div class="slds-size_2-of-6">
+                    <lightning-combobox label="Phase Type" options={filterPhaseTypeValues} value={status} onchange={handlePhaseType}
+                    class="slds-p-around_x-small slds-size_2-of-2"></lightning-combobox>
+                </div>
+                <div class="slds-size_2-of-6">
+                    <lightning-combobox label="Output Type" options={filterOutputTypeValues} value={status} onchange={handleOutputType}
+                    class="slds-p-around_x-small slds-size_2-of-2"></lightning-combobox>
+                </div>
+                <div class="slds-size_2-of-6">
+                    <lightning-combobox label="LLM" options={filterModelNameValues} value={status} onchange={handleModelName}
+                    class="slds-p-around_x-small slds-size_2-of-2"></lightning-combobox>
+                </div>
+            </template>
+            <template lwc:if={showBABox}>
+                 <div class="slds-size_2-of-6">
+                    <lightning-combobox label="Industry" options={filterIndustryValues} value={status} onchange={handleIndustry}
+                    class="slds-p-around_x-small slds-size_2-of-2"></lightning-combobox>
+                </div>
+                <div class="slds-size_2-of-6">
+                    <lightning-combobox label="Entity" options={filterEntityValues} value={status} onchange={handleEntity}
+                    class="slds-p-around_x-small slds-size_2-of-2"></lightning-combobox>
+                </div>
+                <div class="slds-size_2-of-6">
+                    <lightning-combobox label="LLM" options={filterModelNameValues} value={status} onchange={handleModelName}
+                    class="slds-p-around_x-small slds-size_2-of-2"></lightning-combobox>
+                </div>
+            </template>
+        </div>
+        <div class="slds-align_absolute-center slds-p-around_x-small">
+            <lightning-button variant="brand" label="Search" onclick={handleSearch} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand-outline" label="Export" onclick={handleExport} class="slds-m-left_x-small"></lightning-button>
+        </div>
+        <template lwc:if={showTable}>
+            <b>Selected Records: {noOfRecords}</b>
+            <div class="slds-card slds-p-around_small" style="height:400px">
+                <lightning-datatable
+                    key-field="id"
+                    data={tableData}
+                    columns={columns}
+                    hide-checkbox-column="true"
+                    >
+                </lightning-datatable>
+            </div>
+        </template>
+    </div>
+    <c-prompt-manager-utility></c-prompt-manager-utility>
+</template>

@@ -1,0 +1,379 @@
+<template>
+    <lightning-tabset variant="Scoped">
+        <lightning-tab label="Analysis">
+            <lightning-radio-group name="radioGroup1"
+            label=""
+            options={options}
+            onchange={handleRadioChange}
+            value={value}
+            type="radio"
+            ></lightning-radio-group>
+             
+            <template if:true={genUserStories}>
+                <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+                <div class="slds-form" style="margin-top: 20px;">
+                    <div class="slds-grid slds-wrap"> 
+                        <div class="slds-size_6-of-6">
+                            <lightning-radio-group name="radioGroup2"
+                            label="Input Format"
+                            options={inputFormatOptions}
+                            onchange={handleinputFormatOptionChange}
+                            value={selectedinputFormatOption}
+                            type="button"></lightning-radio-group>
+                        </div>
+                        <div class="slds-size_3-of-6"> 
+                        
+                            <div class="slds-form-element slds-form-element_stacked" lwc:if={isFileFormat}>
+
+                                <label class="slds-form-element__label" for="stacked-input-id-01">Upload Transcript</label>
+                                <div class="slds-form-element__control">
+                                    <input type="file" label=""  onchange={handleFileChanges}  name="file" class="slds-input"></input>
+                                
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked" lwc:elseif={isCustomInputFormat}>
+                            
+                                <lightning-textarea onchange={userInputChanged} label="Enter business requirement" ></lightning-textarea>
+                            </div>
+                        </div>
+                        <div class="slds-size_1.5-of-6 slds-var-p-top_large">
+                            <lightning-button label="Generate User Story(ies)"  variant="brand" onclick={executePrompt} id="elementAnalysis"></lightning-button> &nbsp; &nbsp;
+                        </div>
+                        <template if:true={response} >
+                            <div class="slds-size_1-of-6 slds-var-p-top_large">
+                                <lightning-button label="Export" variant="brand" onclick={createDownloadlink} icon-name="utility:download">
+                                </lightning-button>
+                            </div>
+                        </template>
+                        <div class="slds-size_6-of-6">
+                            <div class="slds-box">
+                                <lightning-formatted-rich-text value={response}></lightning-formatted-rich-text>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </template>
+
+
+            <template if:true={valUserStories}>
+                <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+                <div class="slds-form" style="margin-top: 20px;">
+                    <div class="slds-grid slds-wrap"> 
+                        <div class="slds-size_6-of-6">
+                            <lightning-radio-group name="radioGroup3"
+                            label="Input Format"
+                            options={inputFormatOptionsForValidation}
+                            onchange={handleinputFormatOptionChange}
+                            value={selectedinputFormatOption}
+                            type="button"></lightning-radio-group>
+                        </div>
+                        <div class="slds-size_2-of-6"> 
+                        
+                            <div class="slds-form-element slds-form-element_stacked" lwc:if={isFileFormat}>
+
+                                <label class="slds-form-element__label" for="stacked-input-id-01">Upload your document here</label>
+                                <div class="slds-form-element__control">
+                                    <input type="file" label=""  onchange={handleFileChanges}  name="file" class="slds-input"></input>
+                                
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked" lwc:elseif={isCustomInputFormat}>
+                            
+                                <lightning-textarea onchange={userInputChanged} label="Enter User Story(ies)" ></lightning-textarea>
+                            </div>
+                        </div>
+                        <span class="slds-size_1.5-of-6 slds-var-p-top_large">
+                            <lightning-button label="Requirement Quality Assessment"  variant="brand" onclick={executeValidationPrompt} id="elementValidate"></lightning-button> &nbsp;&nbsp;
+                        </span>
+                        <template if:true={validatedResponse} >
+                            <div class="slds-size_1-of-6 slds-var-p-top_large">
+                                <lightning-button label="Export" variant="brand" onclick={createDownloadlink} icon-name="utility:download">
+                                </lightning-button>
+                            </div>
+                        </template>
+
+                        <div class="slds-size_6-of-6">
+                            <div class="slds-box">
+                                <lightning-formatted-rich-text value={validatedResponse}></lightning-formatted-rich-text>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+
+            <!-- <template if:true={response} >
+                <lightning-button label="Export" variant="brand" onclick={createDownloadlink} icon-name="utility:download" style="position: absolute; right: 382px; top: 216px;">
+                </lightning-button>
+            </template> -->
+        </lightning-tab>
+
+        <lightning-tab label="Design">
+            <c-design-phase></c-design-phase>
+        </lightning-tab>
+       
+        <lightning-tab label="Build">
+            <c-build-phase></c-build-phase>
+        </lightning-tab>
+
+        <lightning-tab label="Test">
+            <div class="slds-grid slds-wrap">
+                <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+                <div class="slds-size_6-of-12">
+                    <div class="slds-box slds-m-around_x-small">
+                        <div if:true={classList}>
+                            <lightning-combobox name="Class Name" label="Class Name" value={filteredclassNames}
+                                placeholder="Select Class" options={filteredClassList}
+                                onchange={handleClassChangeForTest}></lightning-combobox>
+                        </div><br>
+                        <div if:true={snippetForTest} class="slds-box slds-box_x-large slds-scrollable_y"
+                            style="box-sizing:border-box ; height: 400px;">
+                            <lightning-formatted-text value={snippetForTest}></lightning-formatted-text>
+                        </div><br>
+                    </div>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <div class="slds-box slds-m-around_x-small">
+                        <lightning-button label="Create Test Class" variant="brand"
+                            onclick={executeCreateTestClassPrompt} id="elementTest-1"></lightning-button>
+                        <div if:true={testResponse} class="slds-box slds-m-top_xx-small slds-box_x-large slds-scrollable_y"
+                            style="box-sizing:border-box ; height: 250px;">
+                            <lightning-formatted-text value={testResponse}></lightning-formatted-text>
+                        </div>
+                    </div>
+                </div>
+                <!-- <template lwc:if={testResponse}>
+                    <lightning-button label="Export" variant="brand" icon-name="utility:download" onclick={createDownloadlink} style="position: absolute; top: 160px; right: 399px;" ></lightning-button>
+                </template> -->
+            </div>
+        </lightning-tab>
+
+        <lightning-tab label="Deploy">
+            <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-size_3-of-6"> 
+                    <div class="slds-form-element slds-form-element_stacked" lwc:if={isFileFormat}>
+                        <label class="slds-form-element__label" for="stacked-input-id-01">Upload Component List in CSV format</label>
+                        <div class="slds-form-element__control">
+                            <input type="file" label=""  onchange={handleFileChanges}  name="file" class="slds-input"></input>     
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-size_2-of-6 slds-var-p-top_large">
+                    <lightning-button label="Generate Manifest File"  variant={buttonBrand1} onclick={executeCSVPrompt} id="element1"></lightning-button> &nbsp;&nbsp;&nbsp;
+                    <lightning-button label="Generate Release Notes"  variant={buttonBrand2} onclick={executeReleaseNotesPrompt} id="element2"></lightning-button> &nbsp;&nbsp;&nbsp;
+                    <template lwc:if={releaseNoteResponse}>
+                        <lightning-button label="Export" variant="brand" icon-name="utility:download" onclick={createDownloadlink} style="position: absolute;"></lightning-button>
+                    </template>
+                    <template lwc:elseif={csvResponse}>
+                        <lightning-button label="Export" variant="brand" icon-name="utility:download" onclick={createDownloadlink} style="position: absolute;"></lightning-button>
+                    </template>
+                </div>
+                <div if:true={releaseNoteResponse} class="slds-box slds-m-top_xx-small slds-box_x-large slds-scrollable_y"
+                    style="box-sizing:border-box ; height: 250px;">
+                    <div class="slds-box slds-size_6-of-6 " style="float: right;" if:true={releaseNoteResponse}>
+                        <lightning-formatted-rich-text 
+                          value={releaseNoteResponse}
+                        ></lightning-formatted-rich-text>
+                    </div>
+                </div>
+                <div if:true={csvResponse} class="slds-box slds-m-top_xx-small slds-box_x-large slds-scrollable_y"
+                style="box-sizing:border-box ; height: 250px;" >
+                    <div class="slds-box slds-size_6-of-6 " style="float: right;"  if:true={csvResponse}>
+                        <lightning-formatted-text 
+                          value={csvResponse}
+                        ></lightning-formatted-text>
+                    </div>
+                    
+                </div>
+            </div>
+        </lightning-tab>
+
+
+        <lightning-tab label="Business Process Extraction">
+            <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+            <div class="slds-grid slds-wrap">
+            <div class="slds-size_6-of-12">
+                <div class="slds-box slds-m-around_x-small">
+                    <div if:true={classList}>
+                        <lightning-combobox name="Class Name" label="Class Name" value={classNames}
+                            placeholder="Select Class" options={classList}
+                            onchange={handleClassChange}></lightning-combobox>
+                    </div><br>
+                    <div if:true={snippet} class="slds-box slds-box_x-large slds-scrollable_y"
+                        style="box-sizing:border-box ; height: 400px;">
+                        <lightning-formatted-text value={snippet}></lightning-formatted-text>
+                    </div><br>
+                </div>
+            </div>
+            <div class="slds-size_6-of-12">
+                <div class="slds-box slds-m-around_x-small">
+                    <lightning-button label="Create Functional Description" variant={buttonBrand3}
+                        onclick={createFunctionalDescriptionPrompt}></lightning-button>
+                    <lightning-button label="Create Technical Description" class="slds-var-m-left_small" variant={buttonBrand4}
+                        onclick={createTechDescriptionPrompt}></lightning-button>
+                    <div if:true={reverseResponse} class="slds-box slds-m-top_xx-small slds-box_x-large slds-scrollable_y"
+                        style="box-sizing:border-box ; height: 250px;">
+                        <lightning-formatted-text value={reverseResponse}></lightning-formatted-text>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </lightning-tab>
+        <lightning-tab label="Code Optimization">
+            <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-size_6-of-12">
+                    <div class="slds-box slds-m-around_x-small">
+                        <div if:true={classList}>
+                            <lightning-combobox name="Class Name" label="Class Name" value={optimizationClassNames}
+                                placeholder="Select Class" options={optimizeClassList}
+                                onchange={handleClassChangeForOptimization}></lightning-combobox>
+                        </div><br>
+                        <div if:true={snippetForOptimization} class="slds-box slds-box_x-large slds-m-top_xx-small slds-scrollable_y"
+                            style="box-sizing:border-box ; height: 400px;">
+                            <lightning-formatted-text value={snippetForOptimization}></lightning-formatted-text>
+                        </div><br>
+                    </div>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <div class="slds-box slds-m-around_x-small">
+
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-size_4-of-12">
+                                <lightning-button label="Code Quality Assessment" variant={buttonBrand5} 
+                                onclick={codeQualityAssessment}></lightning-button>
+                            </div>
+                            <div class="slds-size_4-of-12">
+                                <lightning-button label="Extract DML operations &amp; Suggest optimization"  variant={buttonBrand6}  
+                                onclick={extractDML}></lightning-button>
+                            </div>
+                            <div class="slds-size_4-of-12">
+                                <lightning-button label="Extract SoQL operations &amp; Suggest optimization" variant={buttonBrand7}  class="slds-var-m-left_xx-small"
+                                onclick={extractSOQL}></lightning-button>
+                            </div>
+                        </div>
+                       
+                       
+                        <div if:true={optimizationResponse} class="slds-box slds-box_x-large slds-m-top_xx-small slds-scrollable_y"
+                            style="box-sizing:border-box ; height: 250px;">
+                            <lightning-formatted-text value={optimizationResponse}></lightning-formatted-text>
+                        </div>
+                    </div>
+                </div>
+                </div>
+        </lightning-tab>
+      <!--- <lightning-tab label="Code from this Org">
+            <lightning-card title="Explain Code" icon-name="custom:custom63">
+                <div class="slds-m-around_medium">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-size_6-of-12 slds-p-around_small">
+                            <div class="slds-box">
+                                <div if:true={classList}>
+                                    <lightning-combobox name="Class Name" label="Class Name" value={className}
+                                        placeholder="Select Class" options={classList}
+                                        onchange={handleClassChange}></lightning-combobox>
+                                </div><br>
+                                <div if:true={snippet} class="slds-box slds-box_x-large slds-scrollable_y"
+                                    style="box-sizing:border-box ; height: 400px;">
+                                    <lightning-formatted-text value={snippet}></lightning-formatted-text>
+                                </div><br>
+                            </div>
+                        </div>
+                        <div class="slds-size_6-of-12 slds-p-around_small">
+                            <div class="slds-box">
+                                <header class="slds-card__header slds-grid">
+                                    <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <img src={imageUrl} width="50" height="50" alt="Avatar" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title slds-card__header-link slds-truncate">
+                                                Software Engineering Optimization
+                                            </h2>
+                                            <p class="slds-card__header-subtitle slds-truncate" title="Card Subtitle">
+                                                Your GPT based AI Assistant</p>
+                                        </div>
+                                    </div>
+                                    <div class="slds-p-around_medium lgc-bg">
+                                        <lightning-button-menu alternative-text="Show menu" menu-alignment="right"
+                                            onselect={handleMenuSelect}>
+                                            <template for:each={menuOptions} for:item="item">
+                                                <lightning-menu-item key={item.value} value={item.value}
+                                                    label={item.label}></lightning-menu-item>
+                                            </template>
+                                        </lightning-button-menu>
+                                    </div>
+                                </header>
+                            </div>
+                            <template if:true={showSpinner}>
+                                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                            </template>
+                            <template if:false={showSpinner}>
+                                <div if:true={response} class="slds-box slds-box_x-large slds-scrollable_y"
+                                    style="box-sizing:border-box ; height: 250px;">
+                                    <lightning-formatted-text value={response}></lightning-formatted-text>
+                                </div>
+                            </template><br>
+                        </div>
+                    </div>
+                </div>
+            </lightning-card>
+        </lightning-tab>
+        <lightning-tab label="Write your own code" title="2nd tab extended title">
+            <lightning-card title="Explain Code" icon-name="custom:custom63">
+                <div class="slds-m-around_medium">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-size_6-of-12 slds-p-around_small">
+                            <div class="slds-box slds-p-around_small">
+                                <lightning-textarea label="Code Description" value={customCode}
+                                    onchange={handleCustomCodeChange}></lightning-textarea>
+                            </div>
+                        </div>
+                        <div class="slds-size_6-of-12 slds-p-around_small">
+                            <div class="slds-box">
+                                <header class="slds-card__header slds-grid">
+                                    <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <img src={imageUrl} width="50" height="50" alt="Avatar" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title slds-card__header-link slds-truncate">
+                                                Software Engineering Optimization
+                                            </h2>
+                                            <p class="slds-card__header-subtitle slds-truncate" title="Card Subtitle">
+                                                Your GPT based AI Assistant</p>
+                                        </div>
+                                    </div>
+                                    <div class="slds-p-around_medium lgc-bg">
+                                        <lightning-button-menu alternative-text="Show menu" menu-alignment="right"
+                                            onselect={handleCustomCodeClick}>
+                                            <template for:each={menuOptions} for:item="item">
+                                                <lightning-menu-item key={item.value} value={item.value}
+                                                    label={item.label}></lightning-menu-item>
+                                            </template>
+                                        </lightning-button-menu>
+                                    </div>
+                                </header>
+                            </div>
+                          
+                            <template if:true={showSpinner}>
+                                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                            </template><br>
+                            <template if:false={showSpinner}>
+                                <div if:true={customCodeResponse} class="slds-box slds-box_x-large slds-scrollable_y"
+                                    style="box-sizing:border-box ; height: 250px;">
+                                    <lightning-formatted-text value={customCodeResponse}></lightning-formatted-text>
+                                </div>
+                            </template><br>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </lightning-card>
+        </lightning-tab>-->
+        
+    </lightning-tabset>
+
+</template>

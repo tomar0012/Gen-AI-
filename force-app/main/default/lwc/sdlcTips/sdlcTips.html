@@ -1,0 +1,13 @@
+<template>
+    <lightning-card class="slds-p-around_small">
+        <div for:each={Tips} key={child.DeveloperName} for:item="child" class="slds-p-around_small">
+            <h2 slot="Title" style="font-size: 18px;">
+                <b>{child.FAQ_Heading__c}</b>
+            </h2><br>
+            <div slot="body" style="font-size: 14px; margin: left 5px;">
+                <span> <lightning-formatted-rich-text
+                        value={child.Description__c}></lightning-formatted-rich-text></span>
+            </div>
+        </div>
+    </lightning-card>
+</template>

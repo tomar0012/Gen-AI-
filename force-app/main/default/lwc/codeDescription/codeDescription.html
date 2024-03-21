@@ -1,0 +1,136 @@
+<template>
+    <lightning-tabset variant="Scoped">
+        <lightning-tab label="Code from this Org">
+            <lightning-card title="Explain Code" icon-name="custom:custom63">
+                <div class="slds-m-around_medium">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-size_6-of-12 slds-p-around_small">
+                            <div class="slds-box">
+                                <div if:true={classList}>
+                                    <lightning-combobox name="Class Name" label="Class Name" value={className}
+                                        placeholder="Select Class" options={classList}
+                                        onchange={handleClassChange}></lightning-combobox>
+                                </div><br>
+                                <div if:true={snippet} class="slds-box slds-box_x-large slds-scrollable_y"
+                                    style="box-sizing:border-box ; height: 400px;">
+                                    <lightning-formatted-text value={snippet}></lightning-formatted-text>
+                                </div><br>
+                            </div>
+                        </div>
+                        <div class="slds-size_6-of-12 slds-p-around_small">
+                            <div class="slds-box">
+                                <header class="slds-card__header slds-grid">
+                                    <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <img src={imageUrl} width="50" height="50" alt="Avatar" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title slds-card__header-link slds-truncate">
+                                                Software Engineering Optimization
+                                            </h2>
+                                            <p class="slds-card__header-subtitle slds-truncate" title="Card Subtitle">
+                                                Your GPT based AI Assistant</p>
+                                        </div>
+                                    </div>
+                                    <div class="slds-p-around_medium lgc-bg">
+                                        <lightning-button-menu alternative-text="Show menu" menu-alignment="right"
+                                            onselect={handleMenuSelect}>
+                                            <template for:each={menuOptions} for:item="item">
+                                                <lightning-menu-item key={item.value} value={item.value}
+                                                    label={item.label}></lightning-menu-item>
+                                            </template>
+                                        </lightning-button-menu>
+                                    </div>
+                                </header>
+                            </div>
+                            <template if:true={showSpinner}>
+                                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                            </template>
+                            <template if:false={showSpinner}>
+                                <div if:true={response} class="slds-box slds-box_x-large slds-scrollable_y"
+                                    style="box-sizing:border-box ; height: 250px;">
+                                    <lightning-formatted-text value={response}></lightning-formatted-text>
+                                </div>
+                            </template><br>
+                        </div>
+                    </div>
+                </div>
+            </lightning-card>
+        </lightning-tab>
+        <lightning-tab label="Write your own code" title="2nd tab extended title">
+            <lightning-card title="Explain Code" icon-name="custom:custom63">
+                <div class="slds-m-around_medium">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-size_6-of-12 slds-p-around_small">
+                            <div class="slds-box slds-p-around_small">
+                                <lightning-textarea label="Code Description" value={customCode}
+                                    onchange={handleCustomCodeChange}></lightning-textarea>
+                            </div>
+                        </div>
+                        <div class="slds-size_6-of-12 slds-p-around_small">
+                            <div class="slds-box">
+                                <header class="slds-card__header slds-grid">
+                                    <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <img src={imageUrl} width="50" height="50" alt="Avatar" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title slds-card__header-link slds-truncate">
+                                                Software Engineering Optimization
+                                            </h2>
+                                            <p class="slds-card__header-subtitle slds-truncate" title="Card Subtitle">
+                                                Your GPT based AI Assistant</p>
+                                        </div>
+                                    </div>
+                                    <div class="slds-p-around_medium lgc-bg">
+                                        <lightning-button-menu alternative-text="Show menu" menu-alignment="right"
+                                            onselect={handleCustomCodeClick}>
+                                            <template for:each={menuOptions} for:item="item">
+                                                <lightning-menu-item key={item.value} value={item.value}
+                                                    label={item.label}></lightning-menu-item>
+                                            </template>
+                                        </lightning-button-menu>
+                                    </div>
+                                </header>
+                            </div>
+                            <!--<div class="slds-box slds-p-around_small">
+                                <lightning-button-group>
+                                    <div class="slds-align_absolute-center">
+                                        <lightning-button label="Technical Description" onclick={description}
+                                            style="margin-top: 10px;"></lightning-button>
+                                    </div>
+                                    <div class="slds-align_absolute-center">
+                                        <lightning-button label="Functional Description" onclick={summary}
+                                            style="margin-top: 10px;"></lightning-button>
+                                    </div>
+                                    <div class="slds-align_absolute-center">
+                                        <lightning-button label="Extract DML Operations" onclick={extractDML}
+                                            style="margin-top: 10px;"></lightning-button>
+                                    </div>
+                                    <lightning-button-menu style="margin-top: 10px;">
+                                        <lightning-menu-item label="Extract SOQL Operations"
+                                            onclick={extractSOQL}></lightning-menu-item>
+                                        <lightning-menu-item label="What is my code quality"
+                                            onclick={bestPractices}></lightning-menu-item>
+                                        <lightning-menu-item label="Write Test Class"
+                                            onclick={testClass}></lightning-menu-item>
+                                    </lightning-button-menu>
+                                </lightning-button-group><br>-->
+                            <template if:true={showSpinner}>
+                                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                            </template><br>
+                            <template if:false={showSpinner}>
+                                <div if:true={customCodeResponse} class="slds-box slds-box_x-large slds-scrollable_y"
+                                    style="box-sizing:border-box ; height: 250px;">
+                                    <lightning-formatted-text value={customCodeResponse}></lightning-formatted-text>
+                                </div>
+                            </template><br>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </lightning-card>
+        </lightning-tab>
+    </lightning-tabset>
+
+</template>

@@ -1,0 +1,18 @@
+<template>
+    <div class="slds-card slds-p-around_small" title="Prompt Optimization">
+        <template lwc:if={showSpinner}>
+            <lightning-spinner alternative-text="Loading" size="small" class="slds-align_absolute-center"></lightning-spinner>
+        </template>
+        <div slot="actions">
+            <lightning-button variant="brand" label="Optimize My Prompt" onclick={handleOptimize} style="margin-left:85%"></lightning-button>
+        </div>
+        <div class="slds-grid slds-wrap slds-align_absolute-center">
+            <div class="slds-p-around_x-small slds-size_3-of-6">
+                <lightning-textarea name="input1" label="Input Prompt" onchange={handleChange} class="textarea"></lightning-textarea>
+            </div>
+            <div class=" slds-p-around_x-small slds-size_3-of-6">
+                <lightning-textarea name="input1" label="Optimized Output" value={optimizedText} class="textarea"></lightning-textarea>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,17 @@
+<template>
+    <lightning-card title="FAQs/Additional Configurations" >
+        <lightning-accordion title="FAQs">
+            <template for:each={FAQs} for:item="child">
+                <lightning-accordion-section key={child.DeveloperName} name={child.DeveloperName}
+                    label={child.FAQ_Heading__c}>
+                    <span> 
+                        <lightning-formatted-rich-text
+                            value={child.Description__c}>
+                        </lightning-formatted-rich-text>
+                    </span>
+                </lightning-accordion-section>
+            </template>
+        </lightning-accordion>
+    </lightning-card>
+
+</template>

@@ -1,0 +1,21 @@
+<template>
+    <div class="slds-card slds-p-around_small">
+        <div class="slds-align_absolute-center">
+            <lightning-input label="" name="file uploader" onchange={handleFilesChange} type="file" multiple>
+            </lightning-input>
+        </div>
+        <br/>
+        <div class="slds-text-body_small slds-text-color_error slds-align_absolute-center">
+            <a href="" onclick={handleclick}> Sample CSV File </a></p>
+        </div>
+        <br/>
+        <div class="slds-text-body_small slds-text-color_error slds-align_absolute-center">{fileName}
+        </div>
+        <br/>
+        <div class="slds-align_absolute-center">
+            <lightning-button class="slds-m-top--medium" label={UploadFile} onclick={handleSave} variant="brand"
+                disabled={isTrue}></lightning-button>
+        </div>
+    </div>
+    <c-prompt-manager-utility></c-prompt-manager-utility>
+</template>
