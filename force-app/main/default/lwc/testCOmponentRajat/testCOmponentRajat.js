@@ -5,7 +5,7 @@ import getDescription from '@salesforce/apex/CodeDescriptionController.getDescri
 import getClassNames from '@salesforce/apex/CodeDescriptionController.getClassNames';
 import getFilteredApexClass from '@salesforce/apex/CodeDescriptionController.getFilteredApexClass';
 import getClassBody from '@salesforce/apex/CodeDescriptionController.getClassBody';
-import _executePrompt from '@salesforce/apex/SoftwareEngOptimizerController.executePrompt';
+import _executePrompt from '@salesforce/apex/SoftwateEngOptimizerUtilityController.executePrompt';
 import { USER_STORY_PROMPT, USER_STORY_VALIDATION_PROMPT_CUSTOM, USER_STORY_VALIDATION_PROMPT_Text, PACKAGE_XML_PROMPT , RELEASE_NOTES_PROMPT ,CREATE_TEST_CLASS_PROMPT,GENERATE_FUNCTIONAL_DESCRIPTION,GENERATE_TECH_DESCRIPTION,EXTRACT_DML_OPERATIONS,EXTRACT_SOQL_OPERATIONS,CODE_QUALITY_ASSESSMENT } from './prompts';
 
 

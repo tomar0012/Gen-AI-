@@ -1,5 +1,5 @@
 import { LightningElement, api } from 'lwc';
-import _executePrompt from '@salesforce/apex/SoftwareEngOptimizerController.executePrompt';
+import _executePrompt from '@salesforce/apex/SoftwateEngOptimizerUtilityController.executePrompt';
 import { PACKAGE_XML_PROMPT, RELEASE_NOTES_PROMPT, BUTTONS } from './deployConstant';
 
 export default class DeployPhase extends LightningElement {

@@ -1,7 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import _executePrompt from '@salesforce/apex/SoftwateEngOptimizerUtilityController.executePrompt';
 import getUserStoriesData from '@salesforce/apex/SDLC_BuildController.getUserStoriesData';
-import {SAVED_USER_STORY_COLUMNS,CREATE_APEX_PROMPT,CREATE_LWC_PROMPT,CREATE_TRIGGER_PROMPT,CREATE_CONFIG_WORKBOOK_PROMPT,codeOptions,configWorkbookOptions} from './buildConstant';
+import {SAVED_USER_STORY_COLUMNS,CREATE_APEX_PROMPT,CREATE_LWC_PROMPT,CREATE_TRIGGER_PROMPT,CREATE_CONFIG_WORKBOOK_PROMPT,codeOptions,configWorkbookOptions} from './buildPhaseConstant';
 export default class BuildPhase extends LightningElement {
 
     @api savedUserStories;
@@ -27,6 +27,7 @@ export default class BuildPhase extends LightningElement {
 
     @track data=[];
 
+    /** fetch component specs. related to user stories from db */
      fetchUpdatedData() {
         this.isLoadingBuildTable = true;
         getUserStoriesData({epicId : this.receivedEpic})
@@ -75,6 +76,7 @@ export default class BuildPhase extends LightningElement {
         return configWorkbookOptions();
     }
     
+    /* generate build component based on user selection */
     generateBuildComponents(event){
         this.codeGenerated=true;
         this.isLoading = true;
@@ -150,6 +152,7 @@ export default class BuildPhase extends LightningElement {
         this.componentChange=undefined;
     }
 
+    /* get user selected row details */
     getSelectedRows(event) {
         try {
             const selectedRow = event.detail.selectedRows;

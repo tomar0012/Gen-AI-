@@ -1,0 +1,30 @@
+<template>
+    <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+            <div class="slds-grid slds-wrap">
+            <div class="slds-size_6-of-12">
+                <div class="slds-box slds-m-around_x-small">
+                    <div>
+                        <lightning-combobox name="Class Name" label="Class Name" value={filteredclassNames}
+                            placeholder="Select Class" options={filteredClassList}
+                            onchange={handleClassChange} data-id="businessProcess"></lightning-combobox>
+                    </div><br>
+                    <div if:true={snippet} class="slds-box slds-box_x-large slds-scrollable_y"
+                        style="box-sizing:border-box ; height: 400px;">
+                        <lightning-formatted-text value={snippet}></lightning-formatted-text>
+                    </div><br>
+                </div>
+            </div>
+            <div class="slds-size_6-of-12">
+                <div class="slds-box slds-m-around_x-small">
+                    <lightning-button label="Create Functional Description" variant={buttons.fdsButton}
+                        onclick={createFunctionalDescriptionPrompt}></lightning-button>
+                    <lightning-button label="Create Technical Description" class="slds-var-m-left_small" variant={buttons.tdsButton}
+                        onclick={createTechDescriptionPrompt}></lightning-button>
+                    <div if:true={reverseResponse} class="slds-box slds-m-top_xx-small slds-box_x-large slds-scrollable_y"
+                        style="box-sizing:border-box ; height: 250px;">
+                        <lightning-formatted-text value={reverseResponse}></lightning-formatted-text>
+                    </div>
+                </div>
+            </div>
+            </div>
+</template>

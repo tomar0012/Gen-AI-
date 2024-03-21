@@ -1,64 +1,9 @@
 public with sharing class PromptLibraryController {
-    
-    @AuraEnabled
-    public static List<PromptLibrary__c> getPromptList(String search){
-
-        List<PromptLibrary__c> promptList = new List<PromptLibrary__c>();
-        for(PromptLibrary__c currentPrompt : [Select Id
-                                                    , Name
-                                                    , Prompt__c
-                                                    , PromptType__c
-                                                    , Entity__c
-                                                    , Industry__c
-                                                    , OutputType__c
-                                                    , ModelName__c
-                                                    , PromptComplexity__c
-                                                    , OutputQuality__c
-                                                FROM PromptLibrary__c]){
-                    String promptText = currentPrompt.Prompt__c.toLowerCase();
-                    if(promptText.contains(search)){
-                        promptList.add(currentPrompt);
-                    }                                     
-        }
-        
-        return promptList;
-    }
 
     @AuraEnabled
     public static List<PromptLibrary__c> getPromptListWithFilters(Map<String,String> filterVariables){
         List<PromptLibrary__c> promptFilteredList= new List<PromptLibrary__c>();
-        /*
-        if(searchKey != null){
-            String search = searchKey.toLowerCase();
-            List<PromptLibrary__c> promptList = new List<PromptLibrary__c>();
-            if(!filterVariables.isEmpty()){
-                String query = 'Select Id, Name, Prompt__c, PromptType__c, Entity__c, Industry__c, OutputType__c, ModelName__c, PromptComplexity__c, OutputQuality__c FROM PromptLibrary__c WHERE Name != null';
-                for(String params : filterVariables.keySet()){
-                    if(params != null && filterVariables.get(params) != 'All'){
-                        query += ' AND '+params+' = '+ '\''+filterVariables.get(params)+'\'';
-                    }
-                    else if(params == 'Industry__c' && filterVariables.get(params) == 'All'){
-                        query += ' AND '+params+' = '+ '\''+filterVariables.get(params)+'\'';
-                    }
-                    else if(filterVariables.get(params) == 'All'){
-                        continue;
-                    }
-                }
-                System.debug('Gokul query line '+query);
-                promptList = Database.query(query);
 
-                for(PromptLibrary__c currentPrompt : promptList){
-                    String promptText = currentPrompt.Prompt__c.toLowerCase();
-                    if(promptText.contains(search)){
-                        promptFilteredList.add(currentPrompt);
-                    }
-                }
-            }
-            else {
-                return getPromptList(searchKey);
-            }
-        }
-        else if(!filterVariables.isEmpty()){*/
         String query = 'Select Id, Name, Prompt__c, PromptType__c,Phase__c, Entity__c, Industry__c, OutputType__c, ModelName__c, PromptComplexity__c, OutputQuality__c FROM PromptLibrary__c WHERE Name != null';
         for(String params : filterVariables.keySet()){
             if(params != null && filterVariables.get(params) != 'All'){

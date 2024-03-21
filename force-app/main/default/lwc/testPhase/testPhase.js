@@ -1,5 +1,5 @@
 import { LightningElement,api,track } from 'lwc';
-import _executePrompt from '@salesforce/apex/SoftwareEngOptimizerController.executePrompt';
+import _executePrompt from '@salesforce/apex/SoftwateEngOptimizerUtilityController.executePrompt';
 import getClassNames from '@salesforce/apex/CodeDescriptionController.getClassNames';
 import getFilteredApexClass from '@salesforce/apex/CodeDescriptionController.getFilteredApexClass';
 import getClassBody from '@salesforce/apex/CodeDescriptionController.getClassBody';

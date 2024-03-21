@@ -1,0 +1,43 @@
+<template>
+    <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-size_6-of-12">
+            <div class="slds-box slds-m-around_x-small">
+                <div>
+                    <lightning-combobox name="Class Name" label="Class Name" value={optimizationClassNames}
+                        placeholder="Select Class" options={optimizeClassList}
+                        onchange={handleClassChangeForOptimization} data-id="codeOpti"></lightning-combobox>
+                </div><br>
+                <div if:true={snippetForOptimization} class="slds-box slds-box_x-large slds-m-top_xx-small slds-scrollable_y"
+                    style="box-sizing:border-box ; height: 400px;">
+                    <lightning-formatted-text value={snippetForOptimization}></lightning-formatted-text>
+                </div><br>
+            </div>
+        </div>
+
+        <div class="slds-size_6-of-12">
+            <div class="slds-box slds-m-around_x-small">
+
+                <div class="slds-grid slds-wrap">
+                    <span class="slds-size_4-of-12">
+                        <lightning-button label="Code Quality Assessment" variant={buttons.qualityCheckButton} 
+                        onclick={codeQualityAssessment}></lightning-button>
+                    </span>
+                    <span class="slds-size_4-of-12">
+                        <lightning-button label="Extract DML operations &amp; Suggest optimization"  variant={buttons.dmlCheckButton}  
+                        onclick={extractDML}></lightning-button>
+                    </span>
+                    <span class="slds-size_4-of-12">
+                        <lightning-button label="Extract SOQL operations &amp; Suggest optimization" variant={buttons.soqlCheckButton}  class="slds-var-m-left_xx-small"
+                        onclick={extractSOQL}></lightning-button>
+                    </span>
+                </div>
+                
+                <div if:true={optimizationResponse} class="slds-box slds-box_x-large slds-m-top_xx-small slds-scrollable_y"
+                    style="box-sizing:border-box ; height: 250px;">
+                    <lightning-formatted-text value={optimizationResponse}></lightning-formatted-text>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

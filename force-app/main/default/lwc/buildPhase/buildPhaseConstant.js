@@ -1,5 +1,5 @@
 const SAVED_USER_STORY_COLUMNS = [
-    { label: 'Component Spec', fieldName: 'Component_Spec_Link', wrapText: true, type: 'richText'},
+    { label: 'Component Spec Id', fieldName: 'Component_Spec_Link', wrapText: true, type: 'richText'},
     { label: 'User Story(ies)', fieldName: 'name',type: 'richText', wrapText: true},
     { label: 'Component Spec', fieldName: 'FormattedSpecification__c', wrapText: true, type: 'richText'}
 ];
