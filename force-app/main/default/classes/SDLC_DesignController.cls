@@ -24,7 +24,7 @@ public with sharing class SDLC_DesignController {
 
         List<UserStory__c> userStoryList = [SELECT Id, Name, Title__c
                                             FROM UserStory__c
-                                            WHERE Id=:userStoryIds LIMIT 200];
+                                            WHERE Id=:userStoryIds WITH USER_MODE LIMIT 200];
         
         for(UserStory__c currentStory : userStoryList){
             relatedStories += currentStory.Name +'-'+currentStory.Title__c +';';
@@ -35,7 +35,10 @@ public with sharing class SDLC_DesignController {
         compSpec.FormattedSpecification__c = formattedResponse;
         
         try{
+            if(Schema.sObjectType.ComponentSpecification__c.isCreateable()) {
             insert compSpec;
+            }
+
             //CODE TO CREATE JUCTION OBJECT : 19-03-2024
             for(UserStory__c currentStory : userStoryList){
                 User_Stories_Component_Spec__c junctionObj = New User_Stories_Component_Spec__c();
@@ -43,7 +46,7 @@ public with sharing class SDLC_DesignController {
                 junctionObj.User_Story__c = currentStory.Id;
                 usComSpecToUpdateList.add(junctionObj);
             }
-            if(usComSpecToUpdateList.size()>0){
+            if(usComSpecToUpdateList.size()>0 && Schema.sObjectType.User_Stories_Component_Spec__c.isCreateable()){
                 Insert usComSpecToUpdateList;
                 return true;
             }   

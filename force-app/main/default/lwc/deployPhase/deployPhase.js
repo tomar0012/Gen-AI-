@@ -97,6 +97,7 @@ export default class DeployPhase extends LightningElement {
         }
     }
 
+    //eport file as .doc and .xml
     createDownloadlink(event) {
         if (this.elementId == "element1") {
             let hiddenElement = document.createElement('a');

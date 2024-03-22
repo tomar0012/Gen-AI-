@@ -50,6 +50,7 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
         }
     }
 
+    //fetches current user's name
     @wire(getUserName)
     wiredUserName({ error, data }) {
         try {
@@ -63,6 +64,7 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
         }
     }
 
+    //fetch all the user licences
     @wire(getAllUserLicesnse)
     wiredUserLicenses({ error, data }) {
         try {
@@ -71,6 +73,7 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
                     label: license.MasterLabel,
                     value: license.Id
                 }));
+                console.error('this.userLicenses==>'+JSON.stringify(this.userLicenses));
             } else if (error) {
                 console.log('error fetching license:::' + JSON.stringify(error));
             }
@@ -106,6 +109,7 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
         }
     }
 
+    //get all engagements
     @wire(getAllEngagement)
     wiredRecods({ error, data }) {
         try {
@@ -127,6 +131,7 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
         }
     }
 
+    //get all portfolio's related to engagement
     @wire(getAllPortfolios, { engagementId: '$selectedEngagementId' })
     wiredPortfolios({ error, data }) {
         try {
@@ -153,6 +158,7 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
         }
     }
 
+    //get all product's related to protfolio
     @wire(getAllProductDetails, { portfolioId: '$selectedPortfolioId' })
     wiredProducts({ error, data }) {
         try {
@@ -179,6 +185,7 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
         }
     }
 
+    //get all epic's related to product
     @wire(getAllEpicDetails, { productId: '$selectedProductId' })
     wiredEpics({ error, data }) {
         try {
@@ -292,8 +299,6 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
     handleCreateEngagement() {        
         try {
             this.createNewRecord('Engagement__c');
-            this.selectedPortfolio = '';
-            this.selectedProduct = '';
         } catch (error) {
             console.error(error);
         }
@@ -302,7 +307,6 @@ export default class SetupPhase extends NavigationMixin(LightningElement) {
     handleCreatePortfolio() {
         try {
             this.createNewRecord('Portfolio__c');
-            this.selectedProduct = '';
         } catch (error) {
             console.error(error);
         }

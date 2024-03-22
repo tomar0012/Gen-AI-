@@ -8,7 +8,7 @@ export default class BusinessProcessExtractionPhase extends LightningElement {
     snippet;
     buttons = BUTTONS;
     reverseResponse;
-    className;
+    apexClassName;
     filteredClassList;
     isLoading = false;
     errorMessage = ERROR_MESSAGE;
@@ -17,6 +17,7 @@ export default class BusinessProcessExtractionPhase extends LightningElement {
         this.filteredclassNames();
     }
 
+    //get filtered classes (excluding test class)
     filteredclassNames() {
         try {
             getFilteredApexClass().then(result => {
@@ -42,10 +43,10 @@ export default class BusinessProcessExtractionPhase extends LightningElement {
 
     handleClassChange(event) {
         try {
-            this.className = event.target.value;
+            this.apexClassName = event.target.value;
             this.snippet = '';
-            console.log(this.className);
-            getClassBody({ className: this.className }).then(result => {
+            console.log(this.apexClassName);
+            getClassBody({ className: this.apexClassName }).then(result => {
                 console.log('result', result);
                 this.snippet = result;
             }).catch(error => {

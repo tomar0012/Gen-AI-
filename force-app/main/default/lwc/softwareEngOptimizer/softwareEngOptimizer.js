@@ -22,6 +22,7 @@ export default class SoftwareEngOptimizer extends LightningElement {
         this.isRenderd = true;
     }
 
+    //Reset data to default when the user switches or toggles between tabs.
     handleActive(event){
         this.tabLabel = event.target.label;
         console.log('LABEL '+this.tabLabel);
@@ -67,6 +68,7 @@ export default class SoftwareEngOptimizer extends LightningElement {
         this.handleRenderChanges();
     }
 
+    //get all saved user stories from db based on epic selected by user
     retrieveSavedUserStories(){
         getSavedUserStories({epicId: this.epicID})
         .then(result => {

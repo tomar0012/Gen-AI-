@@ -6,7 +6,7 @@ import { EXTRACT_DML_OPERATIONS, EXTRACT_SOQL_OPERATIONS, CODE_QUALITY_ASSESSMEN
 
 export default class CodeOptimizationPhase extends LightningElement {
     isLoading = false;
-    className;
+    apexClassName;
     optimizeClassList;
     snippetForOptimization;
     optimizationResponse;
@@ -17,6 +17,7 @@ export default class CodeOptimizationPhase extends LightningElement {
         this.optimizationClassNames();
     }
 
+    //get all class names from the org.
     optimizationClassNames() {
         getClassNames().then(result => {
             console.log(result);
@@ -36,10 +37,10 @@ export default class CodeOptimizationPhase extends LightningElement {
     }
 
     handleClassChangeForOptimization(event) {
-        this.className = event.target.value;
+        this.apexClassName = event.target.value;
         this.snippetForOptimization = '';
-        console.log(this.className);
-        getClassBody({ className: this.className }).then(result => {
+        console.log(this.apexClassName);
+        getClassBody({ className: this.apexClassName }).then(result => {
             console.log('result', result);
             this.snippetForOptimization = result;
         }).catch(error => {

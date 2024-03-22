@@ -9,7 +9,6 @@ public with sharing class SDLC_AnalysisController {
 
     @AuraEnabled
     public static void insertUserStories(List<UserStoryWrapper> userStoryList, String epicId) {
-       system.debug('saved-epicId==>'+epicId);
         List<UserStory__c> userStoryToInsert = new List<UserStory__c>();
         for(UserStoryWrapper userStoryWrapper : userStoryList) {
             UserStory__c userStory = new UserStory__c();
@@ -17,16 +16,26 @@ public with sharing class SDLC_AnalysisController {
             userStory.User_Story__c = userStoryWrapper.userStory;
             userStory.AcceptanceCriteria__c = userStoryWrapper.acceptanceCriteria;
             userStory.Epic__c = epicId; 
-            userStoryToInsert.add(userStory);
+            
+            if (Schema.sObjectType.UserStory__c.isCreateable()) {
+                userStoryToInsert.add(userStory);
+            } else {
+                system.debug('Insufficient create permission for UserStory__c');
+            }
         }
-        insert userStoryToInsert;
+
+        if(!userStoryToInsert.isEmpty()){
+            insert userStoryToInsert;
+        }else{
+            system.debug('No user stories to insert');
+        }
     }
 
     @AuraEnabled
     public static List<UserStoryWrapper> getSavedUserStories(String epicId){
         system.debug('generate-epicId==>'+epicId);
         if(epicId!=''){
-            List<UserStory__c> userStoryList = [SELECT Id,name, Title__c,User_Story__c, AcceptanceCriteria__c,ComponentSpec__c FROM UserStory__c Where Epic__c=:epicId Order By CreatedDate Desc];
+            List<UserStory__c> userStoryList = [SELECT Id,name, Title__c,User_Story__c, AcceptanceCriteria__c,ComponentSpec__c FROM UserStory__c Where Epic__c=:epicId  WITH USER_MODE Order By CreatedDate Desc Limit 1000];
             List<UserStoryWrapper> userStoryWrapperList = new List<UserStoryWrapper>();
             for(UserStory__c userStory : userStoryList) {
                 UserStoryWrapper userStoryWrapper = new UserStoryWrapper();
@@ -86,7 +95,7 @@ public with sharing class SDLC_AnalysisController {
                                                         , PromptLibrary__r.Id
                                                         , PromptLibrary__r.Prompt__c
                                                     FROM ConfigurationTable__c 
-                                                    WHERE Phase__c =:phase];
+                                                    WHERE Phase__c =:phase WITH USER_MODE];
                                                     
         for(ConfigurationTable__c config: configList){
             ConfigurationWrapper wrapper = new ConfigurationWrapper();
