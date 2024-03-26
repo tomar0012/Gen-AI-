@@ -2,7 +2,7 @@ import { LightningElement,api,track,wire } from 'lwc';
 import getConfigurationDetails from '@salesforce/apex/SDLC_AnalysisController.getConfigurationDetails';
 import callLLM from '@salesforce/apex/SoftwareEngOptimizerController.callLLM';
 import insertUserStories from '@salesforce/apex/SDLC_AnalysisController.insertUserStories';
-import _executePrompt from '@salesforce/apex/SoftwareEngOptimizerController.executePrompt';
+import _executePrompt from '@salesforce/apex/SoftwateEngOptimizerUtilityController.executePrompt';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import 	sdlc_analysis_error from '@salesforce/label/c.sdlc_analysis_error';
 import {GENERTATEDUSERSTORYCOLUMNS,EXPLAINUSERSTORYCOLUMNS,SAVEDUSERSTORYCOLUMNS,inputFormatOptionsForValidation,analysisOption,inputFormatOptions} from './analysisConstants';

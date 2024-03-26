@@ -1,7 +1,7 @@
 /*
 *********************************************************
 @Class Name      : SoftwareEngOptimizerController
-@author          : COE
+@author          : COE-Arch
 @description     : This class handles various functionalities related to software engineering optimization.
 ********************************************************
 */
@@ -33,9 +33,9 @@ public with sharing class SoftwareEngOptimizerController {
             for (Object file : filesToInsert) {
                 FileInfo fileData = (FileInfo)JSON.deserialize(JSON.serialize(file), FileInfo.class);
                 ContentVersion objCntVersion = new ContentVersion();
-                objCntVersion.PathOnClient = fileData.Title;
-                objCntVersion.Title = fileData.Title;
-                objCntVersion.VersionData = fileData.VersionData;
+                objCntVersion.PathOnClient = fileData.title;
+                objCntVersion.title = fileData.title;
+                objCntVersion.versionData = fileData.versionData;
                 lstVersionsToInsert.add(objCntVersion);
             }
             
@@ -66,14 +66,14 @@ public with sharing class SoftwareEngOptimizerController {
             
     }
     
-     public class uploadresponseWrap {
+     public class UploadResponseWrap {
         public string errorcode;
         public List<string> name;
     }
     
     public class FileInfo {
-        public String Title;
-        public Blob VersionData;
+        public String title;
+        public Blob versionData;
     }
     
     public static string processCSV(String csvData){
@@ -93,7 +93,7 @@ public with sharing class SoftwareEngOptimizerController {
     @AuraEnabled
     public static List<SEO_HomePage__mdt> getallFAQs(){
         try{
-            List<SEO_HomePage__mdt> allFAQ =[select DeveloperName,MasterLabel,FAQ_Heading__c,Description__c,Order__c from SEO_HomePage__mdt where Category__c='FAQ' order by Order__c asc ];
+            List<SEO_HomePage__mdt> allFAQ =[select DeveloperName,MasterLabel,FAQ_Heading__c,Description__c,Order__c from SEO_HomePage__mdt where Category__c='FAQ' WITH USER_MODE order by Order__c asc limit 20];
             return allFAQ;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -112,7 +112,7 @@ public with sharing class SoftwareEngOptimizerController {
     @AuraEnabled
     public static List<SEO_HomePage__mdt> getInitialSteps(){
         try{
-            List<SEO_HomePage__mdt> instruction =[select DeveloperName,MasterLabel,FAQ_Heading__c,Description__c,Order__c from SEO_HomePage__mdt where Category__c='Instructions' order by Order__c asc  ];
+            List<SEO_HomePage__mdt> instruction =[select DeveloperName,MasterLabel,FAQ_Heading__c,Description__c,Order__c from SEO_HomePage__mdt where Category__c='Instructions' WITH USER_MODE order by Order__c asc  Limit 20];
             return instruction;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -131,7 +131,7 @@ public with sharing class SoftwareEngOptimizerController {
     @AuraEnabled
     public static List<SEO_HomePage__mdt> getUsefulTips(){
         try{
-            List<SEO_HomePage__mdt> tips =[select DeveloperName,MasterLabel,FAQ_Heading__c,Description__c,Order__c from SEO_HomePage__mdt where Category__c='Tips' order by Order__c asc  ];
+            List<SEO_HomePage__mdt> tips =[select DeveloperName,MasterLabel,FAQ_Heading__c,Description__c,Order__c from SEO_HomePage__mdt where Category__c='Tips' WITH USER_MODE order by Order__c asc Limit 20];
             return tips;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -156,12 +156,12 @@ public with sharing class SoftwareEngOptimizerController {
         Feedback__c feedback = new Feedback__c();
         feedback.LLM__c = llmId;
         feedback.PromptLibrary__c = promptId;
-
-        insert feedback;
-        return feedback.Id;
         
-    }
-    
+        if (Schema.sObjectType.Feedback__c.isCreateable()) {
+            insert feedback;
+        }
+        return feedback.Id;
+    }    
     
     /*
     *********************************************************
@@ -186,7 +186,9 @@ public with sharing class SoftwareEngOptimizerController {
         feedback.Comments__c = comments;
 
         try{
-            update feedback;
+            if (Schema.sObjectType.Feedback__c.isUpdateable()) {
+                update feedback;
+            }
             return true;
         }
         catch(Exception e){
@@ -219,12 +221,12 @@ public with sharing class SoftwareEngOptimizerController {
         }else{
             FileInfo fileData = (FileInfo)JSON.deserialize(JSON.serialize(inputFile), FileInfo.class);
             system.debug('<==fileData==>'+fileData);
-            if(fileData.Title.contains('.doc')){
-                context = EncodingUtil.base64Encode(fileData.VersionData);
+            if(fileData.title.contains('.doc')){
+                context = EncodingUtil.base64Encode(fileData.versionData);
                 system.debug('context1==>'+context);
 
             }else{
-            context=fileData.VersionData.toString();
+            context=fileData.versionData.toString();
             system.debug('context2==>'+context);
             }
         }
@@ -317,12 +319,12 @@ public with sharing class SoftwareEngOptimizerController {
         }else{
             FileInfo fileData = (FileInfo)JSON.deserialize(JSON.serialize(inputFile), FileInfo.class);
             system.debug('<==fileData==>'+fileData);
-            if(fileData.Title.contains('.doc')){
-                context = EncodingUtil.base64Encode(fileData.VersionData);
+            if(fileData.title.contains('.doc')){
+                context = EncodingUtil.base64Encode(fileData.versionData);
                 system.debug('context1==>'+context);
 
             }else{
-            context=fileData.VersionData.toString();
+            context=fileData.versionData.toString();
             system.debug('context2==>'+context);
             }
         }

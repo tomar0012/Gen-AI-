@@ -173,12 +173,12 @@ public with sharing class SoftwateEngOptimizerUtilityController {
         }else{
             FileInfo fileData = (FileInfo)JSON.deserialize(JSON.serialize(inputFile), FileInfo.class);
             system.debug('<==fileData==>'+fileData);
-            if(fileData.Title.contains('.doc')){
-                context = EncodingUtil.base64Encode(fileData.VersionData);
+            if(fileData.title.contains('.doc')){
+                context = EncodingUtil.base64Encode(fileData.versionData);
                 system.debug('context1==>'+context);
 
             }else{
-            context=fileData.VersionData.toString();
+            context=fileData.versionData.toString();
             system.debug('context2==>'+context);
             }
         }
@@ -210,12 +210,12 @@ public with sharing class SoftwateEngOptimizerUtilityController {
         }else{
             FileInfo fileData = (FileInfo)JSON.deserialize(JSON.serialize(inputFile), FileInfo.class);
             system.debug('<==fileData==>'+fileData);
-            if(fileData.Title.contains('.doc')){
-                context = EncodingUtil.base64Encode(fileData.VersionData);
+            if(fileData.title.contains('.doc')){
+                context = EncodingUtil.base64Encode(fileData.versionData);
                 system.debug('context1==>'+context);
 
             }else{
-            context=fileData.VersionData.toString();
+            context=fileData.versionData.toString();
             system.debug('context2==>'+context);
             }
         }
@@ -250,12 +250,12 @@ public with sharing class SoftwateEngOptimizerUtilityController {
     /*
     *********************************************************
     @Inner Class Name: FileInfo
-    @description    : Represents file information (Title and VersionData).
+    @description    : Represents file information (title and versionData).
     ********************************************************
     */
     public class FileInfo {
-        public String Title;
-        public Blob VersionData;
+        public String title;
+        public Blob versionData;
     }
     
     /*

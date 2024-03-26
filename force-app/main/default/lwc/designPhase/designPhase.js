@@ -1,5 +1,5 @@
 import { LightningElement,api,track,wire} from 'lwc';
-import _executePrompt from '@salesforce/apex/SoftwareEngOptimizerController.executePrompt';
+import _executePrompt from '@salesforce/apex/SoftwateEngOptimizerUtilityController.executePrompt';
 import insertComponentSpecificationRecord from '@salesforce/apex/SDLC_DesignController.insertComponentSpecificationRecord';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getConfigurationDetails from '@salesforce/apex/SDLC_AnalysisController.getConfigurationDetails';
