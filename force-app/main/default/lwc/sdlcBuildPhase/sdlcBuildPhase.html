@@ -1,0 +1,77 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 03-26-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>    
+        <lightning-accordion allow-multiple-sections-open
+                             onsectiontoggle={handleSectionToggle}
+                             active-section-name={activeSections}>
+        
+            <lightning-accordion-section name="A" label="User Stories & Component Specifications">
+                          <lightning-card title="" class="slds-p-around_xxx-small" style="height: 30rem;">  
+                  <div class="slds-m-around_medium" tabindex="0">
+                   <lightning-spinner lwc:if={isLoadingBuildTable} alternative-text="Loading"></lightning-spinner>
+                   <div style="height:600px" class="slds-m-around_xxx-small">
+                   <c-sdlc-datatable
+                   key-field="id"
+                   data={data}
+                   onrowselection={getSelectedRows}
+                   row-number-offset="0"
+                   column-widths-mode="fixed"
+                   columns={savedUserStorycolumns}>
+                   </c-sdlc-datatable>
+                   </div>
+                   </div>
+                  
+           </lightning-card>
+            </lightning-accordion-section>
+    
+            <lightning-accordion-section name="B" label="Generate Build Components">
+                <lightning-card title="" class="slds-p-around_xxx-small" >  
+                   <div class="slds-scrollable_x slds-scrollable_y slds-p-around_small" > 
+                   <div class="slds-grid slds-grid_align-end">
+                       <span class="slds-col slds-size_2-of-6">
+       
+                           <lightning-radio-group variant="label-hidden"  name="radioGroup1" label="Configuration Workbook" options={configWorkbookOptions}
+                           type="button" onchange={handleWorkbookSelection} value={selectedWorkbook}></lightning-radio-group>   
+                       
+                       </span>
+                       <span class="slds-col slds-size_2-of-6">
+                           
+                           <lightning-radio-group variant="label-hidden"  name="radioGroup2" label="Output" options={codeOptions}
+                           type="button" onchange={handleComponentChange} value={componentChange}></lightning-radio-group>   
+                       
+                       </span>
+                       <span class="slds-col slds-size_1-of-6">   
+                           <lightning-button style="float: right;" variant="brand" label="Create" onclick={generateBuildComponents}></lightning-button>
+                       </span>
+                   </div>
+                   
+                   <div>
+                       <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+                       <template lwc:if={isGenResult}>
+                           <lightning-formatted-text class="slds-m-around_medium" value={generatedLwcCode}></lightning-formatted-text>
+                       </template>
+                       <template lwc:if={isCodeGenPromt}>
+                           <lightning-formatted-rich-text class="slds-m-around_medium" value={generatedLwcCode} ></lightning-formatted-rich-text>
+                       </template>
+                       <template lwc:elseif={selRows}>
+                           <lightning-formatted-rich-text class="slds-m-around_medium" value={generatedLwcCode} ></lightning-formatted-rich-text>
+                       </template>
+                       <template lwc:elseif={nothingSelected}>
+                           <lightning-formatted-rich-text class="slds-m-around_medium" value={generatedLwcCode} ></lightning-formatted-rich-text>
+                       </template>
+                   </div>
+                   
+                   </div>
+               </lightning-card>
+               </lightning-accordion-section>
+    
+        </lightning-accordion>
+    
+           
+    </template>
+    

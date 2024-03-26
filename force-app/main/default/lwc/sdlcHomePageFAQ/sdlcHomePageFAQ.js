@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import allFAQs from '@salesforce/apex/SoftwareEngOptimizerController.getallFAQs';
+import allFAQs from '@salesforce/apex/SDLC_SoftwareEngOptimizerController.getallFAQs';
 
 export default class SdlcHomePageFAQ extends LightningElement {
     FAQs = [];

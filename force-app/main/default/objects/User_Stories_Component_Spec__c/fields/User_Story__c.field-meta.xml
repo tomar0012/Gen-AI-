@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>User Story</label>
     <referenceTo>UserStory__c</referenceTo>
-    <relationshipLabel>User Stories Component Specs</relationshipLabel>
+    <relationshipLabel>Component Specs</relationshipLabel>
     <relationshipName>User_Stories_Component_Specs</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

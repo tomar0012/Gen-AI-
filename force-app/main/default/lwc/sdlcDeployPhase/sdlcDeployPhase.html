@@ -1,0 +1,39 @@
+<template>
+    <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-size_3-of-6"> 
+            <div class="slds-form-element slds-form-element_stacked">
+                <label class="slds-form-element__label" for="stacked-input-id-01">Upload Component List in CSV format</label>
+                <div class="slds-form-element__control">
+                    <input type="file" label=""  onchange={handleFileChanges}  name="file" class="slds-input"></input>     
+                </div>
+            </div>
+        </div>
+        <div class="slds-size_2-of-6 slds-var-p-top_large">
+            <lightning-button label="Generate Manifest File"  variant={buttons.manifestButton} onclick={executeCSVPrompt} id="element1"></lightning-button> &nbsp;&nbsp;&nbsp;
+            <lightning-button label="Generate Release Notes"  variant={buttons.releasenoteButton} onclick={executeReleaseNotesPrompt} id="element2"></lightning-button> &nbsp;&nbsp;&nbsp;
+            <template lwc:if={releaseNoteResponse}>
+                <lightning-button label="Export" variant="brand" icon-name="utility:download" onclick={createDownloadlink} style="position: absolute;"></lightning-button>
+            </template>
+            <template lwc:elseif={csvResponse}>
+                <lightning-button label="Export" variant="brand" icon-name="utility:download" onclick={createDownloadlink} style="position: absolute;"></lightning-button>
+            </template>
+        </div>
+        <div if:true={releaseNoteResponse} class="slds-box slds-m-top_xx-small slds-box_x-large slds-scrollable_y"
+            style="box-sizing:border-box ; height: 250px;">
+            <div class="slds-box slds-size_6-of-6 " style="float: right;" if:true={releaseNoteResponse}>
+                <lightning-formatted-rich-text 
+                  value={releaseNoteResponse}
+                ></lightning-formatted-rich-text>
+            </div>
+        </div>
+        <div if:true={csvResponse} class="slds-box slds-m-top_xx-small slds-box_x-large slds-scrollable_y"
+        style="box-sizing:border-box ; height: 250px;" >
+            <div class="slds-box slds-size_6-of-6 " style="float: right;"  if:true={csvResponse}>
+                <lightning-formatted-text 
+                  value={csvResponse}
+                ></lightning-formatted-text>
+            </div>
+        </div>
+    </div>
+</template>
