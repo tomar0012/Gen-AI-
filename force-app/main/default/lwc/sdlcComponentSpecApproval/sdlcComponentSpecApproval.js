@@ -1,6 +1,7 @@
 import { LightningElement,api,wire} from 'lwc';
 import { updateRecord,getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import STATUS_FIELD from  '@salesforce/schema/ComponentSpecification__c.Status__c';
+//import updateComSpecToApprove from '@salesforce/apex/ActionButtonController.updateComSpecToApprove';
 
 const FIELDS = [STATUS_FIELD];
 
