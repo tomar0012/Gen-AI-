@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import getUsefulTips from '@salesforce/apex/SoftwareEngOptimizerController.getUsefulTips';
+import getUsefulTips from '@salesforce/apex/SDLC_SoftwareEngOptimizerController.getUsefulTips';
 export default class SdlcTips extends LightningElement {
     Tips = [];
     

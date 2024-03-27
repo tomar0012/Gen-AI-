@@ -1,0 +1,93 @@
+<template>
+    <div class="slds-p-around_xxx-small" style="background-color: #009EDB;">
+        <p class="slds-p-around_xxx-small"><b>Welcome, {firstName}!</b></p>
+    </div>
+    <div class="slds-box slds-m-top_xxx-small">
+
+        <div class="slds-p-around_xxx-small">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-size_2-of-12">
+                    <b>Select Engagement</b>
+                    <lightning-combobox name="record1" variant="label-hidden" class="slds-m-top_xx-small"
+                        value={defaultEngagement} options={records}
+                        onchange={handleEngagementChange}></lightning-combobox>
+                </div>
+                <div class="slds-size_1-of-12 slds-p-top_large">
+                    <lightning-button-icon icon-name="utility:add" label="Create" variant="brand"
+                        class="slds-m-left_x-small" onclick={handleCreateEngagement}></lightning-button-icon>
+                </div>
+
+                <div class="slds-size_2-of-12">
+                    <b>Select Portfolio</b>
+                    <lightning-combobox name="record2" variant="label-hidden" value={defaultPortfolio}
+                        options={folioRecords} onchange={handlePortfolioChange}
+                        class="slds-m-top_xx-small"></lightning-combobox>
+                </div>
+                <div class="slds-size_1-of-12 slds-p-top_large">
+                    <lightning-button-icon icon-name="utility:add" label="Create" variant="brand"
+                        class="slds-m-left_x-small" onclick={handleCreatePortfolio}></lightning-button-icon>
+                </div>
+                <div class="slds-size_2-of-12">
+                    <b>Select Product</b>
+                    <lightning-combobox name="record3" variant="label-hidden" value={defaultProduct}
+                        options={productDetails} onchange={handleProductChange}
+                        class="slds-m-top_xx-small"></lightning-combobox>
+                </div>
+                <div class="slds-size_1-of-12 slds-p-top_large">
+                    <lightning-button-icon icon-name="utility:add" label="Create" variant="brand"
+                        class="slds-m-left_x-small" onclick={handleCreateProduct}></lightning-button-icon>
+                </div>
+                <div class="slds-size_2-of-12">
+                    <b>Select Epic/Feature</b>
+                    <lightning-combobox name="record4" variant="label-hidden" value={defaultEpic}
+                        options={epicDetails} onchange={handleEpicChange}
+                        class="slds-m-top_xx-small"></lightning-combobox>
+                </div>
+                <div class="slds-size_1-of-12 slds-p-top_large">
+                    <lightning-button-icon icon-name="utility:add" label="Create" variant="brand"
+                        class="slds-m-left_x-small" onclick={handleCreateEpic}></lightning-button-icon>
+                </div>
+            </div>
+        </div>
+
+        <lightning-card class="slds-m-around_xxx-small" title="Select Your Avatar">
+            <div class="slds-p-around_xxx-small" style="width:100%;height:50px;">
+                <template for:each={avatarOptions} for:item="item">
+                    <fieldset key={item.value} style="display: block; float: left;" class={item.class}>
+                        <div class="slds-form-element__control">
+                            <span class="slds-radio">
+                                <input name="radiogroup" id={item.value} type="radio" value={item.value}
+                                    onchange={handleSelectedAvatar} checked={item.checked} />
+                                <label class="slds-radio__label" for={item.value}>
+                                    <span class="slds-radio_faux"></span>
+                                    <span class="slds-form-element__label"><span style="font-size:14px">{item.label}</span> &nbsp;<lightning-avatar
+                                            size="x-small" src={item.icon}></lightning-avatar></span>
+                                </label>
+                            </span>
+                        </div>
+                    </fieldset>
+                </template>
+            </div>
+        </lightning-card>
+        <div class="slds-p-around_xxx-small">
+            <div class="slds-grid slds-wrap ">
+                <div class="slds-size_12-of-12">
+                    <b>Select Salesforce Product Features</b>
+                    <lightning-dual-listbox name="userLicenses" variant="label-hidden" source-label="Available Features"
+                        selected-label="Selected Features" options={userLicenses} value={defaultLicenses}
+                        onchange={handleLicenseSelection}></lightning-dual-listbox>
+                </div>
+                <div class="slds-size_12-of-12">
+                    <div class="slds-float_right slds-p-around_small">
+                        <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-wrap slds-m-top_xx-small">
+        <div class="slds-size_12-of-12">
+            <c-llm-config-table></c-llm-config-table>
+        </div>
+    </div>
+</template>

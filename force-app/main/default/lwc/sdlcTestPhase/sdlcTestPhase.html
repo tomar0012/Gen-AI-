@@ -1,0 +1,65 @@
+<template>
+    <lightning-radio-group name="radioGroup1" label="" options={testOptions} onchange={testOptionChange}
+        type="radio"></lightning-radio-group>
+
+    <div class="slds-grid slds-wrap" lwc:if={showTestClassCreation}>
+        <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+        <div class="slds-size_6-of-12">
+            <div class="slds-box slds-m-around_x-small">
+                <div if:true={classList}>
+                    <lightning-combobox name="Class Name" label="Class Name" value={filteredclassNames}
+                        placeholder="Select Class" options={filteredClassList}
+                        onchange={handleClassChangeForTest}></lightning-combobox>
+                </div><br>
+                <div if:true={snippetForTest} class="slds-box slds-box_x-large slds-scrollable_y"
+                    style="box-sizing:border-box ; height: 400px;">
+                    <lightning-formatted-text value={snippetForTest}></lightning-formatted-text>
+                </div><br>
+            </div>
+        </div>
+        <div class="slds-size_6-of-12">
+            <div class="slds-box slds-m-around_x-small">
+                <lightning-button label="Create Test Class" variant="brand" onclick={executeCreateTestClassPrompt}
+                    id="elementTest-1"></lightning-button>
+                <div if:true={testResponse} class="slds-box slds-m-top_xx-small slds-box_x-large slds-scrollable_y"
+                    style="box-sizing:border-box ; height: 250px;">
+                    <lightning-formatted-text value={testResponse}></lightning-formatted-text>
+                </div>
+            </div>
+        </div>
+        <!-- <template lwc:if={testResponse}>
+                    <lightning-button label="Export" variant="brand" icon-name="utility:download" onclick={createDownloadlink} style="position: absolute; top: 160px; right: 399px;" ></lightning-button>
+                </template> -->
+    </div>
+    <div class="slds-grid slds-wrap" lwc:if={showTestPlanCreation}>
+        <div class="slds-size_12-of-12 slds-p-around_small">
+            <lightning-card title="Requirements">
+                <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
+                <lightning-button slot="actions" variant="brand" label="Create Test Plan" onclick={createTestcase}
+                    class="slds-m-left_x-small"></lightning-button>
+                <div style="height:400px">
+                    <c-sdlc-datatable key-field="id" data={savedUserStories} show-row-number-column="true"
+                        row-number-offset="0" onrowselection={getSelectedRows} column-widths-mode="fixed"
+                        columns={savedUserStorycolumns}>
+                    </c-sdlc-datatable>
+                </div>
+            </lightning-card>
+        </div>
+        <div class="slds-size_12-of-12 "  lwc:if={showGeneratedTable}>
+            <lightning-card title="Generated Test Plan">
+                <div style="text-align:center">
+                    <lightning-formatted-rich-text lwc:if={showErrorMessage} value={errorMessage}>
+                    </lightning-formatted-rich-text>
+                </div>
+                <lightning-button slot="actions" variant="brand" label="Export" class="slds-m-left_x-small"
+                    onclick={handleExport}></lightning-button>
+                <div class="slds-p-around_small" lwc:if={showTestCases}>
+                    <c-sdlc-datatable key-field="id" data={testCaseData} hide-checkbox-column="true"
+                        show-row-number-column="true" row-number-offset="0" column-widths-mode="fixed"
+                        columns={testCaseColumns}>
+                    </c-sdlc-datatable>
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template>

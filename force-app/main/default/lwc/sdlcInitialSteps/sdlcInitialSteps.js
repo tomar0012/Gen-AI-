@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import getInstructions from '@salesforce/apex/SoftwareEngOptimizerController.getInitialSteps';
+import getInstructions from '@salesforce/apex/SDLC_SoftwareEngOptimizerController.getInitialSteps';
 export default class SdlcInitialSteps extends LightningElement {
 
     instructions = [];
