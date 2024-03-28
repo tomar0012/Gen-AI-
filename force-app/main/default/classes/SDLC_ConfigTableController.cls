@@ -7,11 +7,11 @@
 */
 public with sharing class SDLC_ConfigTableController {
     
-        /*
+/*
 *********************************************************
 @Method Name     : updateConfigTable
 @author          : COE Team - Sachin[1347061]
-@description     : Get Config Table Records Date and group them to show on UI/UX
+@description     : update Config Table Records with Active and another one as Deactivate 
 @param inputType : configDataMap as an JSON Object
 @return          : True or false
 ********************************************************
@@ -19,8 +19,43 @@ public with sharing class SDLC_ConfigTableController {
     
     @AuraEnabled
     public static boolean updateConfigTable(List<Map<String, Object>> configDataMap) {
-        system.debug('configDataMap-->'+configDataMap);
-        if(configDataMap != Null && !configDataMap.isEmpty()){}
+        String Key = '';
+        Map<String,String> activeConfigTableMap = new Map<String,String>();
+        List<ConfigurationTable__c> configTableListToUpdate = New  List<ConfigurationTable__c>();
+        List<ConfigurationTable__c> configTableList = [SELECT Id, Name, Action__c, Active__c, Phase__c, LLM__c,LLM__r.Name, PromptLibrary__c, Prompt_With_Explanation__c, Sub_Action_Name__c, Action_Name__c
+                                                       FROM ConfigurationTable__c USER_MODE Order By Phase__c ASC];
+        
+        if(configDataMap != Null && !configDataMap.isEmpty()){
+            
+            for(Map<String, Object> thisDataMap : configDataMap){
+                activeConfigTableMap.put((String)thisDataMap.get('formattedKey'),(String)thisDataMap.get('llm'));
+            }
+            
+            if(configTableList.size()>0 && !activeConfigTableMap.IsEmpty()){
+                for(ConfigurationTable__c thisRecord :configTableList ){
+                    Key = (String) thisRecord.Phase__c +  thisRecord.Action__c +  thisRecord.Sub_Action_Name__c;
+                    if(activeConfigTableMap.ContainsKey(Key) && !thisRecord.Active__c && thisRecord.LLM__c != Null && activeConfigTableMap.get(Key) == thisRecord.LLM__r.Name){
+                        ConfigurationTable__c obj = new ConfigurationTable__c();
+                        obj.Id = thisRecord.Id;
+                        obj.Active__c = true;
+                        configTableListToUpdate.add(obj); 
+                    }
+                    else if(activeConfigTableMap.ContainsKey(Key) && thisRecord.Active__c && thisRecord.LLM__c != Null && activeConfigTableMap.get(Key) != thisRecord.LLM__r.Name){
+                        ConfigurationTable__c obj = new ConfigurationTable__c();
+                        obj.Id = thisRecord.Id;
+                        obj.Active__c = false;
+                        configTableListToUpdate.add(obj);
+                    }
+                }
+            }
+            if(configTableListToUpdate.size()>0 && Schema.sObjectType.ConfigurationTable__c.isUpdateable()){
+                
+                update configTableListToUpdate;
+                system.debug('configTableListToUpdate-->'+configTableListToUpdate);
+                return true;
+            }
+        }
+        
         return false;
     }
     

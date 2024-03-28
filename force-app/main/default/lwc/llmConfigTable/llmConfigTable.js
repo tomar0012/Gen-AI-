@@ -68,17 +68,19 @@ export default class LlmConfigTable extends LightningElement {
                console.log('formattedData==>'+JSON.stringify(this.llmConfigDataList));
         
     }
+
     handleSave(event){
+        console.log('formattedData ==>'+JSON.stringify(this.llmConfigDataList));
         updateConfigTable({configDataMap: this.llmConfigDataList})
         .then(result => {
             console.log('result',result);
-            this.showNotification('Success','Configuration Table Saved logic is yet to be written','success');
-            this.fireUserStorySavedEvent();
+            this.showNotification('Success','Configuration Table Saved Successfully!','success');
         })
         .catch(error => {
             console.log('error',error);
         });
     }
+
     showNotification(_title, _message, _variant) {
         const evt = new ShowToastEvent({
             title: _title,
