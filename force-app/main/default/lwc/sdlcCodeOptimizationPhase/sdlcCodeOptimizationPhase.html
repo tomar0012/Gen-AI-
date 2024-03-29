@@ -1,3 +1,10 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 03-29-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
 <template>
     <lightning-spinner lwc:if={isLoading} alternative-text="Loading"></lightning-spinner>
     <div class="slds-grid slds-wrap">
@@ -21,7 +28,7 @@
                 <div class="slds-grid slds-wrap">
                     <span class="slds-size_4-of-12">
                         <lightning-button label="Code Quality Assessment" variant={buttons.qualityCheckButton} 
-                        onclick={codeQualityAssessment}></lightning-button>
+                        onclick={executeCodeQualityAssessmentPrompt}></lightning-button>
                     </span>
                     <span class="slds-size_4-of-12">
                         <lightning-button label="Extract DML operations &amp; Suggest optimization"  variant={buttons.dmlCheckButton}  
@@ -40,4 +47,5 @@
             </div>
         </div>
     </div>
+    <c-sdlc-utility></c-sdlc-utility>
 </template>
