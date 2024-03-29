@@ -1,14 +1,21 @@
-import { LightningElement, api, track } from 'lwc';
-import _executePrompt from '@salesforce/apex/SDLC_InfyAIForceUtility.executePrompt';
+/*******************************
+*@name          SdlcBuildPhase
+*@description   LWC component for AI Force App's Build Tab
+*@author        COE
+*@created Date  2024
+**********************************/
+
+import { LightningElement, api, track, wire } from 'lwc';
+import callLLM from '@salesforce/apex/SDLC_SoftwareEngOptimizerController.callLLM';
 import getUserStoriesData from '@salesforce/apex/SDLC_BuildController.getUserStoriesData';
-import {SAVED_USER_STORY_COLUMNS,CREATE_APEX_PROMPT,CREATE_LWC_PROMPT,CREATE_TRIGGER_PROMPT,CREATE_CONFIG_WORKBOOK_PROMPT,codeOptions,configWorkbookOptions,NO_INPUT_SELECTED_ERROR,NO_USER_STORY_SELECTED_ERROR,NO_BUILD_COMPONENTS_SELECTED_ERROR,ERROR_GENERATING_OUTPUT} from './constant';
+import {CREATE_APEX_CLASS,CREATE_LWC,CREATE_APEX_TRIGGER,CREATE_CONFIGURATION_WORKBOOK,SAVED_USER_STORY_COLUMNS,codeOptions,configWorkbookOptions,NO_INPUT_SELECTED_ERROR,NO_USER_STORY_SELECTED_ERROR,NO_BUILD_COMPONENTS_SELECTED_ERROR,ERROR_GENERATING_OUTPUT} from './constant';
 
 export default class SdlcBuildPhase extends LightningElement {
     @api savedUserStories;
-    CREATE_APEX_PROMPT =CREATE_APEX_PROMPT;
-    CREATE_LWC_PROMPT=CREATE_LWC_PROMPT;
-    CREATE_TRIGGER_PROMPT=CREATE_TRIGGER_PROMPT;
-    CREATE_CONFIG_WORKBOOK_PROMPT = CREATE_CONFIG_WORKBOOK_PROMPT;
+    CREATE_APEX_CLASS=CREATE_APEX_CLASS;
+    CREATE_LWC=CREATE_LWC;
+    CREATE_APEX_TRIGGER=CREATE_APEX_TRIGGER;
+    CREATE_CONFIGURATION_WORKBOOK=CREATE_CONFIGURATION_WORKBOOK;
     componentChange='';
     isLoading;
     isLoadingBuildTable = false;
@@ -52,7 +59,7 @@ export default class SdlcBuildPhase extends LightningElement {
     }
 
     connectedCallback(){
-        this.fetchUpdatedData();
+    this.fetchUpdatedData();
     }
     
     @api 
@@ -67,6 +74,7 @@ export default class SdlcBuildPhase extends LightningElement {
         this.nothingSelected = true;
         this.isCodeGenPromt = false;
         this.selRows = false;
+        console.log('BUILD refreshData --> START');
     }
 
     get codeOptions() {
@@ -81,30 +89,38 @@ export default class SdlcBuildPhase extends LightningElement {
         this.isLoading = true;
     
         try {
-            let CODE_GEN_PROMPT =  this.componentChange == 'Apex' ? CREATE_APEX_PROMPT : this.componentChange == 'LWC' ? CREATE_LWC_PROMPT : this.componentChange == 'Trigger' ? CREATE_TRIGGER_PROMPT : this.selectedWorkbook == 'configurationWorkbook' ? CREATE_CONFIG_WORKBOOK_PROMPT : null;
-
-            if(((this.selectedRows!=null || this.selectedRows!=undefined|| !this.selectedRows=='') && (CODE_GEN_PROMPT!=null || !CODE_GEN_PROMPT=='' || !CODE_GEN_PROMPT==undefined)) || ((this.CREATE_CONFIG_WORKBOOK_PROMPT!=null || this.CREATE_CONFIG_WORKBOOK_PROMPT!=''|| this.CREATE_CONFIG_WORKBOOK_PROMPT!=undefined) && (this.selectedRows!=null || !this.selectedRows==''  || !this.selectedRows==undefined) && (CODE_GEN_PROMPT!=null || !CODE_GEN_PROMPT=='' || !CODE_GEN_PROMPT==undefined))){
+            let CODE_GEN_PROMPT_ACTION =  this.componentChange == 'Apex' ? CREATE_APEX_CLASS : this.componentChange == 'LWC' ? CREATE_LWC : this.componentChange == 'Trigger' ? CREATE_APEX_TRIGGER : this.selectedWorkbook == 'configurationWorkbook' ? CREATE_CONFIGURATION_WORKBOOK : null;
+            //this.assignPromptAndLLM();
+            if(((this.selectedRows!=null || this.selectedRows!=undefined|| !this.selectedRows==''))){
                 this.selRows = false;
                 this.isCodeGenPromt=false;
                 this.nothingSelected=false;
 
-                _executePrompt({ prompt: CODE_GEN_PROMPT,inputType:'Custom', userInput:this.selectedRows, inputFile: null }).then(result => {
+                let parameterDetails = this.generateParameterWrapperDetails('Custom'
+                                    , this.selectedRows
+                                    , null
+                                    , CODE_GEN_PROMPT_ACTION
+                                    , 'Text'
+                                    , false);
+                console.log('parameter '+JSON.stringify(parameterDetails));    
+                callLLM({parameterDetails:JSON.stringify(parameterDetails)})
+                .then(result=>{
                     this.isGenResult = true
                     this.generatedLwcCode= result;
                     this.isLoading = false;
                 }).catch(error => {
-                    console.error(error);
-                    this.generatedLwcCode = ERROR_GENERATING_OUTPUT;
+                    console.log('error==>'+JSON.stringify(error));
+                    this.generatedLwcCode = 'Sorry I\'m busy can you try later';
                     this.isLoading = false;
                 });
-            }else if(!CODE_GEN_PROMPT && !this.selectedRows){
+            }else if(!CODE_GEN_PROMPT_ACTION && !this.selectedRows){
                 this.isGenResult=false;
                 this.nothingSelected = true;
                 this.isCodeGenPromt = false;
                 this.selRows = false;
                 this.isLoading = false;
                  this.generatedLwcCode = NO_INPUT_SELECTED_ERROR;
-            }else if(CODE_GEN_PROMPT && !this.selectedRows){
+            }else if(CODE_GEN_PROMPT_ACTION && !this.selectedRows){
                 this.isGenResult=false;
                 this.isCodeGenPromt = true;
                 this.selRows=false;
@@ -112,7 +128,7 @@ export default class SdlcBuildPhase extends LightningElement {
                 this.isLoading = false;
                 this.generatedLwcCode = NO_USER_STORY_SELECTED_ERROR;
             }
-            else if(this.selectedRows && !CODE_GEN_PROMPT){
+            else if(this.selectedRows && !CODE_GEN_PROMPT_ACTION){
                 this.isGenResult=false;
                 this.isCodeGenPromt = false;
                 this.selRows = true;
@@ -124,6 +140,11 @@ export default class SdlcBuildPhase extends LightningElement {
             console.error(error);
             this.isLoading=false;
         }
+    }
+    //Generate input wrapper
+    generateParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        return utilityComp.setParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain);
     }
     
     handleComponentChange(event){

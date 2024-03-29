@@ -21,7 +21,7 @@ export default class SdlcDesignPhase extends LightningElement {
     @api savedUserStories;
     @track componentSpecStories;
     @track userStoryIdWithTitle;
-    @track explainChecked;
+    @track explainChecked = false;
     @track configurationRecords = [];
     prompt;
     showDesignTable=false;
@@ -107,27 +107,14 @@ export default class SdlcDesignPhase extends LightningElement {
     executeComponentSpecificationPrompt(){
         console.log('PROMPT BEFORE EXECUTING '+this.compspec_prompt);
         this.isLoading = true;
-       /* _executePrompt({prompt:this.compspec_prompt,inputType:this.inputType,userInput:this.componentSpecInput,inputFile:this.inputFile})
-        .then(result=>{
-            console.log('result '+result);
-            let richTextHTML = '';
-            let responseObject = JSON.parse(result);
-            let ObjectKeys = Object.keys(responseObject[0]);
-            console.log('Gokul Keys '+ ObjectKeys);
-            let explanation;
-            this.showDesignTable = true;
-            this.isLoading = false;
-            this.showFeedback = true;
-            
-        })
-        .catch(error=>{
-            console.log('ERRO '+error.message);
-            this.formattedText = '<b style="color:red;">'+'Error Occured. Try Again.</b>'
-            this.showDesignTable = true;
-            this.isLoading = false;
-            this.showFeedback = true;
-        })*/
-        callLLM({inputType:this.inputType,userInput:this.componentSpecInput,inputFile:this.inputFile,configId:this.configId,className:this.llmClassName})
+        let parameterDetails = this.generateParameterWrapperDetails('Custom'
+                                                                    , this.componentSpecInput
+                                                                    , null
+                                                                    , 'Create Component Spec'
+                                                                    , 'Custom'
+                                                                    , this.explainChecked);
+        console.log('parameter '+JSON.stringify(parameterDetails));    
+        callLLM({parameterDetails:JSON.stringify(parameterDetails)})
         .then(result=>{
             console.log('result '+result);
             let richTextHTML = '';
@@ -135,6 +122,7 @@ export default class SdlcDesignPhase extends LightningElement {
             let ObjectKeys = Object.keys(responseObject[0]);
             console.log('Gokul Keys '+ ObjectKeys);
             this.formatComponentSpecResponse(responseObject);
+            this.createFeedback('Create Component Spec', 'Custom');
             this.showDesignTable = true;
             this.isLoading = false;
             this.showFeedback = true;
@@ -142,6 +130,7 @@ export default class SdlcDesignPhase extends LightningElement {
         })
         .catch(error=>{
             console.log('ERRO '+error.message);
+            this.createFeedback('Create Component Spec', 'Custom');
             this.formattedText = '<b style="color:red;">'+'Error Occured. Try Again.</b>'
             this.showDesignTable = true;
             this.isLoading = false;
@@ -241,4 +230,19 @@ export default class SdlcDesignPhase extends LightningElement {
         this.formattedText = richTextHTML;
     }
 
+
+    generateParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        return utilityComp.setParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain);
+    }
+
+    async createFeedback(_actionName,_subActionName){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        let result = await utilityComp.createFeedback(_actionName,_subActionName);
+        console.log('FEEDBACK DESIGN');
+        if(result){
+            this.showFeedback = true;
+            this.feedbackRecordId = result;
+        }
+    }
 }

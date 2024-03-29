@@ -26,7 +26,7 @@
                 <lightning-card title="Component Specification">
                     <div slot="actions" style="display:flex;flex-direction:row;">
                         <div class="slds-p-top_small"><lightning-button variant="brand" label="Save The Spec" onclick={saveComponentSpec} class="slds-p-around_x-small" ></lightning-button></div>
-                        <div><template lwc:if={showFeedback}><c-feedback-component llm-id={designLLMId} prompt-id={designPromptId}></c-feedback-component></template></div>
+                        <div><template lwc:if={showFeedback}><c-feedback-component record-id={feedbackRecordId}></c-feedback-component></template></div>
                     </div>
                     
                     <template lwc:if={showDesignTable}>
@@ -39,5 +39,5 @@
             </div>
         </div>
     </div>
-   
+    <c-sdlc-utility></c-sdlc-utility>
 </template>

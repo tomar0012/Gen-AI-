@@ -1,62 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-	<types>
-		<members>ComponentSpecification__c</members>
-		<members>UserStory__c</members>
-		<members>User_Stories_Component_Spec__c</members>
-		<name>CustomObject</name>
-	</types>
-	<types>
-		<members>Approve_Reject_Component_Spec</members>
-		<name>Flow</name>
-	</types>
-	<types>
-		<members>ComponentSpecification__c-Component Specification Layout</members>
-		<members>UserStory__c-User Story Layout</members>
-		<members>User_Stories_Component_Spec__c-User Stories Component Specs Layout</members>
-		<name>Layout</name>
-	</types>
-	<types>
-		<members>sdlcAnalysisPhase</members>
-		<members>sdlcApproveUserStory</members>
-		<members>sdlcBuildPhase</members>
-		<members>sdlcBusinessProcessExtractionPhase</members>
-		<members>sdlcCodeOptimizationPhase</members>
-		<members>sdlcDatatable</members>
-		<members>sdlcDeployPhase</members>
-		<members>sdlcDesignPhase</members>
-		<members>sdlcHome</members>
-		<members>sdlcHomePageFAQ</members>
-		<members>sdlcInitialSteps</members>
-		<members>sdlcSetupPhase</members>
-		<members>sdlcSoftwareEngOptimizer</members>
-		<members>sdlcStartPhase</members>
-		<members>sdlcSubmitForApproval</members>
-		<members>sdlcTestPhase</members>
-		<members>sdlcTips</members>
-		<members>sdlc_Datatable</members>
-		<members>sdlc_Home</members>
-		<members>sdlc_HomePageFAQ</members>
-		<members>sdlc_InitialSteps</members>
-		<members>sdlc_Tips</members>
-		<members>sdlc_analysisPhase</members>
-		<members>sdlc_approveUserStory</members>
-		<members>sdlc_buildPhase</members>
-		<members>sdlc_businessProcessExtractionPhase</members>
-		<members>sdlc_codeDescription</members>
-		<members>sdlc_codeOptimizationPhase</members>
-		<members>sdlc_deployPhase</members>
-		<members>sdlc_designPhase</members>
-		<members>sdlc_feedbackComponent</members>
-		<members>sdlc_softwareEngOptimizer</members>
-		<members>sdlc_startPhase</members>
-		<members>sdlc_submitForApproval</members>
-		<members>sdlc_testPhase</members>
-		<name>LightningComponentBundle</name>
-	</types>
-	<types>
-		<members>ComponentSpecification__c.Approve</members>
-		<name>QuickAction</name>
-	</types>
+[10:09 AM] Rajat Majumder
+ 
+<types>
+        <members>sdlcDesignPhase</members>
+        <members>sdlcDeployPhase</members>
+        <members>sdlcBuildPhase</members>
+        <members>sdlcCodeDescription</members>
+        <members>sdlcAnalysisPhase</members>
+        <members>sdlcDatatable</members>
+        <members>sdlcTestPhase</members>        
+        <members>sldcBanner</members>        
+        <members>sdlcTips</members>        
+        <members>sdlcInitialSteps</members>        
+        <members>sdlcHomePageFAQ</members>        
+        <members>sdlcSoftwareEngOptimizer</members>
+        <members>sdlcStartPhase</members>            
+        <members>sdlcFeedbackComponent</members>        
+        <members>sdlcSubmitForApproval</members>        
+        <members>sdlcApproveUserstory</members>
+        <members>sdlcHome</members>        
+        <members>sdlcCodeOptimizationPhase</members>        
+        <members>sdlcBusinessProcessExtractionPhase</members>        
+        <name>LightningComponentBundle</name>
+    </types>
+ 
+<types>
+        <members>SDLC_AIHelper</members>
+        <members>SDLC_LLMInterface</members>
+        <members>SDLC_LLMContext</members>
+        <members>SDLC_PromptLibraryController</members>
+        <members>SDLC_AnalysisController</members>
+        <members>SDLC_AnalysisController_Test</members>
+        <members>SDLC_BuildController</members>
+        <members>SDLC_BuildControllerTest</members>
+        <members>SDLC_ChatGPTMockCallout_Test</members>
+        <members>SDLC_CodeDescriptionController</members>
+        <members>SDLC_DesignController</members>
+        <members>SDLC_DesignController_Test</members>
+        <members>SDLC_SoftwareEngOptimizerController</members>
+        <members>SDLC_InfyAIForceUtility</members>
+        <members>SDLC_InfyAIForceUtility_Test</members>
+        <members>SDLC_MockHttpResponseGenerator_Test</members>
+        <members>SDLC_TestDataFactory</members>
+        <members>SDLC_DesignController_Test</members>
+        <members>SDLC_SoftwareEngOptimizerController</members>
+        <members>SDLC_SoftwareEngOptimizerController_Test</members>
+        <members>SDLC_TestDataFactory</members>
+        <name>ApexClass</name>
+    </types>
 	<version>58.0</version>
 </Package>

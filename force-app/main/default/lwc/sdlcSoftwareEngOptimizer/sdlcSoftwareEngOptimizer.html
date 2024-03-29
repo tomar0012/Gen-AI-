@@ -1,3 +1,10 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 03-26-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
 <template>
     <lightning-tabset variant="Scoped">
         <lightning-tab label="Start" onactive={handleActive} value="Start">
@@ -13,7 +20,7 @@
         </lightning-tab>
        
         <lightning-tab label="Build" onactive={handleActive}>
-            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue} received-epic={epicID}></c-sldc-banner>
+            <!-- <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue} received-epic={epicID}></c-sldc-banner> -->
             <c-sdlc-build-phase saved-user-stories={savedUserStories} received-epic={epicID}></c-sdlc-build-phase>
         </lightning-tab>
 

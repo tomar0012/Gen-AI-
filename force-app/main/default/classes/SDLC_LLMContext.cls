@@ -1,11 +1,11 @@
 public class SDLC_LLMContext {
- private LLMInterface llm;
+ private SDLC_LLMInterface llm;
  
-    public SDLC_LLMContext(LLMInterface llm) {
+    public SDLC_LLMContext(SDLC_LLMInterface llm) {
         this.llm = llm;
     }
  
-    public void setLLM(LLMInterface llm) {
+    public void setLLM(SDLC_LLMInterface llm) {
         this.llm = llm;
     }
     
