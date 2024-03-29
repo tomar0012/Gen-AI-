@@ -1,0 +1,13 @@
+<template>
+    <div style="display: flex;justify-content: space-between;align-items: center;background-color: #d3d3d3;" class="slds-p-around_xx-small">
+             <div>
+                <span style=" color: blue;"><b>Current Context: </b>{projectContext.engagement} > {projectContext.portfolio} > {projectContext.product} > {projectContext.epic},  </span>
+                <lightning-button 
+                variant="base"
+                label="Change context " 
+                onclick={navigateToComponent} 
+                ></lightning-button>
+            </div>
+            <div>{avatarValue}  &nbsp;<lightning-avatar  size="x-small" src={avatarIcon}></lightning-avatar></div>
+        </div>
+</template>

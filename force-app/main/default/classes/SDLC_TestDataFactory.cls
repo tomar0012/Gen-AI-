@@ -71,7 +71,7 @@ public class SDLC_TestDataFactory {
         insert prompt;
 
         ConfigurationTable__c configTable = new ConfigurationTable__c();
-        configTable.Name = 'Create User Story';
+        //configTable.Name = 'Create User Story';
         configTable.LLM__c = llm.Id;
         configTable.PromptLibrary__c = prompt.Id;
         configTable.Phase__c = 'Analysis';
@@ -87,8 +87,8 @@ public class SDLC_TestDataFactory {
         insert prompt;
         
         Feedback__c feedback = new Feedback__c();
-        feedback.LLM__c = llm.Id;
-        feedback.PromptLibrary__c = prompt.Id;
+        //feedback.LLM__c = llm.Id;
+        //feedback.PromptLibrary__c = prompt.Id;
         insert feedback;
         return feedback;
     } 

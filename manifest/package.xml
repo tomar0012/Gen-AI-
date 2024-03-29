@@ -1,12 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-	<types>
-		<members>SDLC_ConfigTableController</members>
-		<name>ApexClass</name>
-	</types>
-	<types>
-		<members>llmConfigTable</members>
-		<name>LightningComponentBundle</name>
-	</types>
+[10:09 AM] Rajat Majumder
+ 
+<types>
+        <members>sdlcDesignPhase</members>
+        <members>sdlcDeployPhase</members>
+        <members>sdlcBuildPhase</members>
+        <members>sdlcCodeDescription</members>
+        <members>sdlcAnalysisPhase</members>
+        <members>sdlcDatatable</members>
+        <members>sdlcTestPhase</members>        
+        <members>sldcBanner</members>        
+        <members>sdlcTips</members>        
+        <members>sdlcInitialSteps</members>        
+        <members>sdlcHomePageFAQ</members>        
+        <members>sdlcSoftwareEngOptimizer</members>
+        <members>sdlcStartPhase</members>            
+        <members>sdlcFeedbackComponent</members>        
+        <members>sdlcSubmitForApproval</members>        
+        <members>sdlcApproveUserstory</members>
+        <members>sdlcHome</members>        
+        <members>sdlcCodeOptimizationPhase</members>        
+        <members>sdlcBusinessProcessExtractionPhase</members>        
+        <name>LightningComponentBundle</name>
+    </types>
+ 
+<types>
+        <members>SDLC_AIHelper</members>
+        <members>SDLC_LLMInterface</members>
+        <members>SDLC_LLMContext</members>
+        <members>SDLC_PromptLibraryController</members>
+        <members>SDLC_AnalysisController</members>
+        <members>SDLC_AnalysisController_Test</members>
+        <members>SDLC_BuildController</members>
+        <members>SDLC_BuildControllerTest</members>
+        <members>SDLC_ChatGPTMockCallout_Test</members>
+        <members>SDLC_CodeDescriptionController</members>
+        <members>SDLC_DesignController</members>
+        <members>SDLC_DesignController_Test</members>
+        <members>SDLC_SoftwareEngOptimizerController</members>
+        <members>SDLC_InfyAIForceUtility</members>
+        <members>SDLC_InfyAIForceUtility_Test</members>
+        <members>SDLC_MockHttpResponseGenerator_Test</members>
+        <members>SDLC_TestDataFactory</members>
+        <members>SDLC_DesignController_Test</members>
+        <members>SDLC_SoftwareEngOptimizerController</members>
+        <members>SDLC_SoftwareEngOptimizerController_Test</members>
+        <members>SDLC_TestDataFactory</members>
+        <name>ApexClass</name>
+    </types>
 	<version>58.0</version>
 </Package>

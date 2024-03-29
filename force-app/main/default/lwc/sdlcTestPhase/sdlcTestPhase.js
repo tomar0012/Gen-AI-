@@ -1,17 +1,12 @@
 import { LightningElement,api,track } from 'lwc';
-import _executePrompt from '@salesforce/apex/SDLC_InfyAIForceUtility.executePrompt';
-import getClassNames from '@salesforce/apex/SDLC_CodeDescriptionController.getClassNames';
-import getFilteredApexClass from '@salesforce/apex/SDLC_CodeDescriptionController.getFilteredApexClass';
-import getClassBody from '@salesforce/apex/SDLC_CodeDescriptionController.getClassBody';
+import _executePrompt from '@salesforce/apex/SoftwateEngOptimizerUtilityController.executePrompt';
+import getClassNames from '@salesforce/apex/CodeDescriptionController.getClassNames';
+import getFilteredApexClass from '@salesforce/apex/CodeDescriptionController.getFilteredApexClass';
+import getClassBody from '@salesforce/apex/CodeDescriptionController.getClassBody';
+import callLLM from '@salesforce/apex/SDLC_SoftwareEngOptimizerController.callLLM';
+import {CREATE_TEST_CLASS_PROMPT, TEST_PLAN_PROMPT,SAVED_USERSTORY_COLUMNS,TEST_PLAN_COLUMNS,testOptions} from './testConstants';
 
-const CREATE_TEST_CLASS_PROMPT = 'Generate a APEX test class for the given apex class. Include testsetup and test methods with necessary code. Cover all the positive, negative, IF-ELSE condition, try-catch scenarios as well while generating response. Generate Test class  without delimiters.';
-
-const TEST_PLAN_PROMPT = 'Generate Salesforce Test Plan having atleast one normal, one negative scenario and boundary conditions for given user story in the following JSON format without any delimiter:' +
-'[{"testCase": " Strictly Do not mention the scenario like negative, boundary and give a suitable test case title.", "testCaseDescription": "test case description related to the userStory",'+
-'"testSteps":[insert the test steps related to the test plan in bullets in array element], "dataRequirements":"data required to perform the test plan",'+
-'"expectedResult":"Expected output as per the userStory"}]';
-
-export default class SdlcTestPhase extends LightningElement {
+export default class TestPhase extends LightningElement {
     @api savedUserStories;
     classList;
     filteredClassList;
@@ -29,26 +24,22 @@ export default class SdlcTestPhase extends LightningElement {
     showTestPlanCreation = false;
     showErrorMessage = false;
     showGeneratedTable = false;
+    testOptions = testOptions();
+    testPrompt = CREATE_TEST_CLASS_PROMPT;
+    savedUserStorycolumns = SAVED_USERSTORY_COLUMNS;
+    testCaseColumns = TEST_PLAN_COLUMNS;
+    explainChecked = false;
 
     @api refreshData(){
         this.template.querySelector('c-sdlc-datatable').selectedRows=[];
         this.showGeneratedTable = false;
         this.snippetForTest = '';
         this.testResponse = '';
-        this.showTestClassCreation=undefined;
-        this.showTestPlanCreation = undefined;
-        console.log('this.showTestClassCreation'+this.showTestClassCreation);
-        console.log('this.showTestPlanCreation'+this.showTestPlanCreation);
-        this.showTestCases = false;
-        this.showGeneratedTable = false;
-        this.selectedButton = undefined
     }
 
     connectedCallback() {
-        //this.retrieveSavedUserStories();
         this.classNames()
-        this.filteredclassNames()
-        //this.optimizationClassNames()
+        this.filteredclassNames();
     }
 
     classNames() {
@@ -64,49 +55,14 @@ export default class SdlcTestPhase extends LightningElement {
         });
     }
 
-    get testOptions(){
-        return [
-            { label: 'Create Test Class', value: 'Create Test Class' },
-            { label: 'Create Test Plan', value: 'Create Test Plan' },
-        ];
-    }
-    selectedButton;
+
     testOptionChange(event){
-        this.selectedButton = event.detail.value;
-        // this.showTestClassCreation = event.detail.value === 'Create Test Class';
-        // this.showTestPlanCreation = event.detail.value === 'Create Test Plan';
-
-
-        if(this.selectedButton === 'Create Test Class'){
-            this.showTestClassCreation = this.selectedButton;
-        }else if(this.selectedButton ==='Create Test Plan') {
-            this.showTestPlanCreation = this.selectedButton;
-        }
-        console.log('this.showTestClassCreation'+this.showTestClassCreation);
-        console.log('this.showTestPlanCreation'+this.showTestPlanCreation);
-        /*if(this.showTestClassCreation){
-            this.template.querySelector('c-sdlc-datatable').selectedRows=[];
-            this.showTestCases = false;
-        }
-        else if(this.showTestPlanCreation){
-            this.snippetForTest = '';
-            this.testResponse = '';
-        }*/
+        this.showTestClassCreation = event.detail.value === 'Create Test Class';
+        this.showTestPlanCreation = event.detail.value === 'Create Test Plan';
+        this.testPrompt = this.showTestPlanCreation ? TEST_PLAN_PROMPT : CREATE_TEST_CLASS_PROMPT;
     }
 
-    savedUserStorycolumns = [
-        { label: 'Title', fieldName: 'userStoryId', type: 'url', typeAttributes: {label: { fieldName: 'name' }, target: '_blank'}},
-        { label: 'User Story', fieldName: 'userStory',wrapText: true},
-        { label: 'Acceptance Criteria', fieldName: 'acceptanceCriteria',wrapText: true}
-    ];
-
-    testCaseColumns = [
-        { label: 'Test Case Title', fieldName: 'testCase',wrapText: true },
-        { label: 'Test Case Description', fieldName: 'testCaseDescription',wrapText: true, type:'text'},
-        { label: 'Test Steps', fieldName: 'formattedTestSteps', type:'richText'},
-        { label: 'Data Requirement', fieldName: 'dataRequirements',wrapText: true},
-        { label: 'Expected Result', fieldName: 'expectedResult',wrapText: true}
-    ];
+    
 
     handleClassChangeForTest(event) {
         this.className = event.target.value;
@@ -138,13 +94,31 @@ export default class SdlcTestPhase extends LightningElement {
     executeCreateTestClassPrompt(event){
         this.isLoading = true;
         this.elementId = event.target.id.split('-')[0];;
-        _executePrompt({ prompt: CREATE_TEST_CLASS_PROMPT,userInput:this.snippetForTest, inputType:'custom',inputFile:this.fileUploaded }).then(result => {
+        /*_executePrompt({ prompt: this.testPrompt,userInput:this.snippetForTest, inputType:'custom',inputFile:this.fileUploaded }).then(result => {
             console.log(result);
             console.log("====>"+JSON.stringify(this.snippetForTest));
             console.log("====>a"+JSON.stringify(this.fileUploaded ));
             this.testResponse = result;
             this.isLoading = false;
         }).catch(error => {
+            this.response = 'Sorry I\'m busy can you try later';
+            this.isLoading = false;
+        });*/
+        let parameterDetails = this.generateParameterWrapperDetails('Custom'
+                                                                    , this.snippetForTest
+                                                                    , null
+                                                                    , 'Create Test Class'
+                                                                    , 'Custom'
+                                                                    , this.explainChecked);
+        console.log('parameter '+JSON.stringify(parameterDetails));    
+        callLLM({parameterDetails:JSON.stringify(parameterDetails)})
+        .then(result=>{
+            console.log('result '+JSON.stringify(result));    
+
+            this.testResponse = result;
+            this.isLoading = false;
+        }).catch(error => {
+            console.log('test class error==>'+JSON.stringify(error));
             this.response = 'Sorry I\'m busy can you try later';
             this.isLoading = false;
         });
@@ -173,32 +147,13 @@ export default class SdlcTestPhase extends LightningElement {
     }
 
     createTestcase(){
-        console.log('Gok exece');
         this.errorMessage = '';
-        let objectData = [];
         this.isLoading = true;
-        _executePrompt({prompt:TEST_PLAN_PROMPT,inputType:'Custom',userInput:this.testPlanInput,inputFile:null})
+        /*_executePrompt({prompt:this.testPrompt,inputType:'Custom',userInput:this.testPlanInput,inputFile:null})
         .then(result=>{
             console.log('RESULTT TEST => '+result);
-            //let testObject =[];
             this.testCSVData = JSON.parse(result);
-           JSON.parse(result).forEach(record=>{
-                let testObject = Object.assign({},record);
-                let richTextHTML = '<ul>';
-                console.log('sdfd f'+ testObject.testSteps);
-                if(Object.keys(testObject.testSteps.length > 1)){
-                    Array.from(testObject.testSteps, steps=>{
-                        richTextHTML +='<li>'+steps+'</li>';
-                    });
-                }
-                else if(Object.keys(testObject.testSteps.length == 1)){
-                    richTextHTML +='<li>'+testObject.testSteps+'</li>';
-                }
-                richTextHTML+='</ul>';
-                testObject.formattedTestSteps = richTextHTML;
-                objectData.push(testObject);
-           })
-           this.testCaseData = objectData;
+            this.testCaseData = this.formatTestPlan(result) ;
             console.log('result ==> data '+JSON.stringify(this.testCaseData));
             if(this.testCaseData){
                 this.showTestCases = true;
@@ -214,8 +169,57 @@ export default class SdlcTestPhase extends LightningElement {
             this.showErrorMessage = true;
             this.showTestCases = false;
             this.showGeneratedTable = true;
-           // this.showTestCases = true;
+        })*/
+        this.showGeneratedTable = false;
+        let parameterDetails = this.generateParameterWrapperDetails('Custom'
+                                                                    , this.testPlanInput
+                                                                    , null
+                                                                    , 'Create Test plan'
+                                                                    , 'Custom'
+                                                                    , this.explainChecked);
+        console.log('parameter '+JSON.stringify(parameterDetails));    
+        callLLM({parameterDetails:JSON.stringify(parameterDetails)})
+        .then(result=>{
+            console.log('RESULTT TEST => '+result);
+            this.testCSVData = JSON.parse(result);
+            this.testCaseData = this.formatTestPlan(result) ;
+            console.log('result ==> data '+JSON.stringify(this.testCaseData));
+            if(this.testCaseData){
+                this.showTestCases = true;
+                this.isLoading = false;
+                this.showErrorMessage = false;
+                this.showGeneratedTable = true;
+            }
         })
+        .catch(error=>{
+            console.log('ERROR => '+error.message);
+            this.errorMessage = '<b style="color:red;font-size:20px;text-align:center">Try Again!!</b>';
+            this.isLoading = false;
+            this.showErrorMessage = true;
+            this.showTestCases = false;
+            this.showGeneratedTable = true;
+        });
+    }
+
+    formatTestPlan(responseObject){
+        let objectData = [];
+        JSON.parse(responseObject).forEach(record=>{
+            let testObject = Object.assign({},record);
+            let richTextHTML = '<ul>';
+            console.log('sdfd f'+ testObject.testSteps);
+            if(Object.keys(testObject.testSteps.length > 1)){
+                Array.from(testObject.testSteps, steps=>{
+                    richTextHTML +='<li>'+steps+'</li>';
+                });
+            }
+            else if(Object.keys(testObject.testSteps.length == 1)){
+                richTextHTML +='<li>'+testObject.testSteps+'</li>';
+            }
+            richTextHTML+='</ul>';
+            testObject.formattedTestSteps = richTextHTML;
+            objectData.push(testObject);
+       });
+       return objectData;
     }
 
     handleExport(){
@@ -267,5 +271,10 @@ export default class SdlcTestPhase extends LightningElement {
         document.body.appendChild(downloadElement);
         // click() Javascript function to download CSV file
         downloadElement.click();
+    }
+
+    generateParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        return utilityComp.setParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain);
     }
 }

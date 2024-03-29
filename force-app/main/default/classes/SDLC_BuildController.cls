@@ -1,16 +1,13 @@
 /*
 *********************************************************
 @Class Name      : SDLC_BuildController
-@author          : COE 
+@author          : COE-Arch
 @description     : This class handles various functionalities related to Build Phase
 ********************************************************
 */
 public with sharing class SDLC_BuildController {
-    public SDLC_BuildController() {
-        
-    }
-    
-    /*
+
+/*
 *********************************************************
 @Method Name     : getUserStoriesData
 @author          : COE Team - Sachin[1347061]
@@ -27,7 +24,7 @@ public with sharing class SDLC_BuildController {
         
         userStoryCompSpecList =[SELECT Id, Name, User_Story__r.Id, User_Story__r.Name, User_Story__r.Formatted_Name__c, Component_Specification__r.Id, Component_Specification__r.Name, Component_Specification__r.FormattedSpecification__c 
                                FROM User_Stories_Component_Spec__c 
-                               WHERE User_Story__r.Epic__c =:epicId order by CreatedDate DESC LIMIT 200];
+                               WHERE User_Story__r.Epic__c =:epicId WITH USER_MODE order by CreatedDate DESC LIMIT 200];
         
         if(userStoryCompSpecList.size()>0){
             
@@ -35,42 +32,46 @@ public with sharing class SDLC_BuildController {
                 
                 if(comSpecUserStoryMap.ContainsKey(thisRecord.Component_Specification__r.Id)){
                     
-                    CSWrapper CSWrapperInstance = comSpecUserStoryMap.get(thisRecord.Component_Specification__r.Id);
-                    USWrapper USWrapperInstance = new USWrapper();
-                    USWrapperInstance.userStoryId = (String) thisRecord.User_Story__r.Id;
-                    USWrapperInstance.userStoryName = (String) thisRecord.User_Story__r.Name;
-                    USWrapperInstance.userStoryLink = (String) '<a href="/'+thisRecord.User_Story__r.Id+'" target="_blank">'+  thisRecord.User_Story__r.Formatted_Name__c +'</a><br>';
-                    CSWrapperInstance.usWrapperList.add(USWrapperInstance);
+                    CSWrapper csWrapperInstance = comSpecUserStoryMap.get(thisRecord.Component_Specification__r.Id);
+                    csWrapperInstance.componentSpecName = (String) thisRecord.Component_Specification__r.Name; 
+                    csWrapperInstance.formattedSpecification = (String) thisRecord.Component_Specification__r.FormattedSpecification__c; 
+                    csWrapperInstance.componentSpeclink = (String) '<a href="/'+thisRecord.Component_Specification__r.Id+'" target="_blank">'+  thisRecord.Component_Specification__r.Name +'</a><br>';
                     
-                    comSpecUserStoryMap.put(thisRecord.Component_Specification__r.Id, CSWrapperInstance);
+                    USWrapper usWrapperInstance = new USWrapper();
+                    usWrapperInstance.userStoryId = (String) thisRecord.User_Story__r.Id;
+                    usWrapperInstance.userStoryName = (String) thisRecord.User_Story__r.Name;
+                    usWrapperInstance.userStoryLink = (String) '<a href="/'+thisRecord.User_Story__r.Id+'" target="_blank">'+  thisRecord.User_Story__r.Formatted_Name__c +'</a><br>';
+                    csWrapperInstance.usWrapperList.add(usWrapperInstance);
+                    
+                    comSpecUserStoryMap.put(thisRecord.Component_Specification__r.Id, csWrapperInstance);
                 }
                 else {
-                    CSWrapper CSWrapperInstance = new CSWrapper();
-                    CSWrapperInstance.componentSpecName = (String) thisRecord.Component_Specification__r.Name; 
-                    CSWrapperInstance.FormattedSpecification = (String) thisRecord.Component_Specification__r.FormattedSpecification__c; 
-                    CSWrapperInstance.componentSpeclink = (String) '<a href="/'+thisRecord.Component_Specification__r.Id+'" target="_blank">'+  thisRecord.Component_Specification__r.Name +'</a><br>';
+                    CSWrapper csWrapperInstance = new CSWrapper();
+                    csWrapperInstance.componentSpecName = (String) thisRecord.Component_Specification__r.Name; 
+                    csWrapperInstance.formattedSpecification = (String) thisRecord.Component_Specification__r.FormattedSpecification__c; 
+                    csWrapperInstance.componentSpeclink = (String) '<a href="/'+thisRecord.Component_Specification__r.Id+'" target="_blank">'+  thisRecord.Component_Specification__r.Name +'</a><br>';
                     
-                    USWrapper USWrapperInstance = new USWrapper();
-                    USWrapperInstance.userStoryId = (String) thisRecord.User_Story__r.Id;
-                    USWrapperInstance.userStoryName = (String) thisRecord.User_Story__r.Name;
-                    USWrapperInstance.userStoryLink = (String) '<a href="/'+thisRecord.User_Story__r.Id+'" target="_blank">'+  thisRecord.User_Story__r.Formatted_Name__c +'</a><br>';
-                    CSWrapperInstance.usWrapperList = new List<USWrapper>{USWrapperInstance};
+                    USWrapper usWrapperInstance = new USWrapper();
+                    usWrapperInstance.userStoryId = (String) thisRecord.User_Story__r.Id;
+                    usWrapperInstance.userStoryName = (String) thisRecord.User_Story__r.Name;
+                    usWrapperInstance.userStoryLink = (String) '<a href="/'+thisRecord.User_Story__r.Id+'" target="_blank">'+  thisRecord.User_Story__r.Formatted_Name__c +'</a><br>';
+                    csWrapperInstance.usWrapperList = new List<USWrapper>{usWrapperInstance};
                         
-                    comSpecUserStoryMap.put(thisRecord.Component_Specification__r.Id, CSWrapperInstance);
+                    comSpecUserStoryMap.put(thisRecord.Component_Specification__r.Id,csWrapperInstance);
                 }
             }
             
-            String Hyperlink='';         
+            String hyperlink='';         
             for(String thisComSpecId : comSpecUserStoryMap.Keyset()){
-                Hyperlink=''; 
+                hyperlink=''; 
                 Map<String, Object> summaryMap = new Map<String, Object>();                
                 
                 for(USWrapper thisUS : comSpecUserStoryMap.get(thisComSpecId).usWrapperList){
-                    Hyperlink +=  thisUS.userStoryLink; 
+                    hyperlink +=  thisUS.userStoryLink; 
                 }
-                summaryMap.put('name', Hyperlink);
+                summaryMap.put('name', hyperlink);
                 summaryMap.put('Component_Spec_Link', comSpecUserStoryMap.get(thisComSpecId).componentSpeclink);
-                summaryMap.put('FormattedSpecification__c',comSpecUserStoryMap.get(thisComSpecId).FormattedSpecification);
+                summaryMap.put('FormattedSpecification__c',comSpecUserStoryMap.get(thisComSpecId).formattedSpecification);
                 
                 dataMap.add(summaryMap);
             }
@@ -84,7 +85,7 @@ public with sharing class SDLC_BuildController {
         @AuraEnabled
         public String componentSpeclink { get; set; }
         @AuraEnabled
-        public String FormattedSpecification { get; set; }
+        public String formattedSpecification { get; set; }
         @AuraEnabled
         public List<USWrapper> usWrapperList { get; set; }
         

@@ -15,7 +15,7 @@ export default class LlmConfigTable extends LightningElement {
             let formattedData = [];
             result.forEach(record =>{
                 formattedData.push({
-                    id: record.Id,
+                    id: record.id,
                     phase:record.phase,
                     phase:record.phase,
                     category:record.category,

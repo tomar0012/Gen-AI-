@@ -5,6 +5,7 @@ import insertUserStories from '@salesforce/apex/SDLC_AnalysisController.insertUs
 import _executePrompt from '@salesforce/apex/SDLC_InfyAIForceUtility.executePrompt';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import 	sdlc_analysis_error from '@salesforce/label/c.sdlc_analysis_error';
+import createFeedback from '@salesforce/apex/SDLC_SoftwareEngOptimizerController.createFeedback';
 import {GENERTATEDUSERSTORYCOLUMNS,EXPLAINUSERSTORYCOLUMNS,SAVEDUSERSTORYCOLUMNS,inputFormatOptionsForValidation,analysisOption,inputFormatOptions} from './sdlcAnalysisConstants';
 export default class SDLCAnalysisPhase extends LightningElement {
 
@@ -39,6 +40,7 @@ export default class SDLCAnalysisPhase extends LightningElement {
     @track isValidateExplain = false;
     selectedPrompt;
     showFeedback = false;
+    feedbackRecordId;
     @api epicId;
     value;
     @track configurationRecords = [];
@@ -70,7 +72,7 @@ export default class SDLCAnalysisPhase extends LightningElement {
     wiredConfigurationDetails({data,error}){
         if(data){
             this.configurationRecords = data;
-            
+            console.log('')
         }
         else if(error){
             console.log('ERR '+error)
@@ -274,26 +276,32 @@ export default class SDLCAnalysisPhase extends LightningElement {
     executeUserStoryGenerationPrompt(event){
         this.isLoading = true;
         this.elementId = event.target.id;
-        this.assignPromptAndLLM();
-
-        console.log('PROMPT --> '+this.userstory_prompt);
-        callLLM({inputType:this.selectedinputFormatOption,userInput:this.userInput, inputFile:this.fileUploaded,configId:this.configId,className:this.llmClassName })
-        .then(result => {
+        
+        let parameterDetails = this.generateParameterWrapperDetails(this.selectedinputFormatOption
+                                                                    , this.userInput
+                                                                    , this.fileUploaded
+                                                                    , 'Generate User Story'
+                                                                    , this.selectedinputFormatOption
+                                                                    , this.explainChecked);
+        console.log('parameter '+JSON.stringify(parameterDetails));    
+        callLLM({parameterDetails:JSON.stringify(parameterDetails)})
+        .then(result=>{
             console.log(result);
             this.response = result;
             this.generatedUserStories=JSON.parse(result);
-            this.storyGenerated = true
+            this.storyGenerated = true;
+            this.createFeedback('Generate User Story',this.selectedinputFormatOption);
             this.lenGeneratedUserStories='Generated Use Cases - '+ '('+ (this.generatedUserStories.length) +')';
             if(this.explainChecked){
                 this.generatedUserStorycolumns = this.explainUserStorycolumns;
             }
             this.isLoading = false;
         })
-        .catch(error => {
-            this.response = this.analysisError;
-            this.isLoading = false;
-            console.log("error generating user stories"+ error.message);
-        });
+        .catch(error=>{
+            this.createFeedback('Generate User Story',this.selectedinputFormatOption);
+            console.log('ERROR '+error.message);
+            this.isLoading= false;
+        })                                                  
     }
 
     userInputChanged(event){
@@ -304,17 +312,26 @@ export default class SDLCAnalysisPhase extends LightningElement {
         console.log('event==>'+event.target.value);
         this.isLoading = true;
         this.elementId = event.target.id;
-        this.assignPromptAndLLM();
         console.log('VALIDATION PROMPT '+this.validation_prompt)
-        callLLM({inputType:this.selectedinputFormatOption,userInput:this.userInput, inputFile:this.fileUploaded,configId:this.configId,className:this.llmClassName })
-        .then(result => {
+        let parameterDetails = this.generateParameterWrapperDetails(this.selectedinputFormatOption
+                                                                    , this.userInput
+                                                                    , this.fileUploaded
+                                                                    , 'Validate User Story'
+                                                                    , this.selectedinputFormatOption
+                                                                    , this.explainChecked);
+        console.log('parameter '+JSON.stringify(parameterDetails));    
+        callLLM({parameterDetails:JSON.stringify(parameterDetails)})
+        .then(result=>{
             console.log(result);
             this.response = result;
             console.log('GOKUL RESP '+result);
             this.formatValidateResponse(result);
+            this.createFeedback('Validate User Story',this.selectedinputFormatOption);
             this.isLoading = false;
             this.showFeedback = true;
-        }).catch(error => {
+        })
+        .catch(error => {
+            this.createFeedback('Validate User Story',this.selectedinputFormatOption);
             this.validatedResponse = this.analysisError;
             this.isLoading = false;
             this.showFeedback = true;
@@ -379,5 +396,20 @@ export default class SDLCAnalysisPhase extends LightningElement {
             richTextHTML += '</table></html>';
         });
         this.validatedResponse = richTextHTML;
+    }
+
+    generateParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        return utilityComp.setParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain);
+    }
+
+    async createFeedback(_actionName,_subActionName){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        let result = await utilityComp.createFeedback(_actionName,_subActionName);
+        console.log('FEEDBACK DESIGN');
+        if(result){
+            this.showFeedback = true;
+            this.feedbackRecordId = result;
+        }
     }
 }
