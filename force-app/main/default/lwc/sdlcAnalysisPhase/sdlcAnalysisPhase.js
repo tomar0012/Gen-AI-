@@ -68,7 +68,7 @@ export default class SDLCAnalysisPhase extends LightningElement {
         return this.trimmedValue.slice(0,10);
     }
 
-    @wire(getConfigurationDetails,{phase:'$tabLabel'})
+   /* @wire(getConfigurationDetails,{phase:'$tabLabel'})
     wiredConfigurationDetails({data,error}){
         if(data){
             this.configurationRecords = data;
@@ -77,7 +77,7 @@ export default class SDLCAnalysisPhase extends LightningElement {
         else if(error){
             console.log('ERR '+error)
         }
-    }
+    }*/
 
     assignPromptAndLLM(){
         this.configurationRecords.forEach(record=>{
@@ -276,17 +276,26 @@ export default class SDLCAnalysisPhase extends LightningElement {
     executeUserStoryGenerationPrompt(event){
         this.isLoading = true;
         this.elementId = event.target.id;
-        
-        let parameterDetails = this.generateParameterWrapperDetails(this.selectedinputFormatOption
+        let parameterDetails;
+        if(this.selectedinputFormatOption!='Custom'){
+        parameterDetails = this.generateParameterWrapperDetails(this.selectedinputFormatOption
                                                                     , this.userInput
                                                                     , this.fileUploaded
                                                                     , 'Generate User Story'
                                                                     , this.selectedinputFormatOption
                                                                     , this.explainChecked);
+        }else{
+            parameterDetails = this.generateParameterWrapperDetails(this.selectedinputFormatOption
+                                                                    , this.userInput
+                                                                    , null
+                                                                    , 'Generate User Story'
+                                                                    , 'Text'
+                                                                    , this.explainChecked);
+        }
         console.log('parameter '+JSON.stringify(parameterDetails));    
         callLLM({parameterDetails:JSON.stringify(parameterDetails)})
         .then(result=>{
-            console.log(result);
+            console.log('Analyisresult2=>'+JSON.stringify(result));
             this.response = result;
             this.generatedUserStories=JSON.parse(result);
             this.storyGenerated = true;
@@ -296,6 +305,7 @@ export default class SDLCAnalysisPhase extends LightningElement {
                 this.generatedUserStorycolumns = this.explainUserStorycolumns;
             }
             this.isLoading = false;
+            this.showFeedback = true;
         })
         .catch(error=>{
             this.createFeedback('Generate User Story',this.selectedinputFormatOption);
@@ -312,17 +322,30 @@ export default class SDLCAnalysisPhase extends LightningElement {
         console.log('event==>'+event.target.value);
         this.isLoading = true;
         this.elementId = event.target.id;
+        //this.assignPromptAndLLM();
         console.log('VALIDATION PROMPT '+this.validation_prompt)
-        let parameterDetails = this.generateParameterWrapperDetails(this.selectedinputFormatOption
+        console.log('VALIDATION PROMPT '+this.selectedinputFormatOption)
+        let parameterDetails;
+        if(this.selectedinputFormatOption!='Custom'){
+        parameterDetails = this.generateParameterWrapperDetails(this.selectedinputFormatOption
                                                                     , this.userInput
                                                                     , this.fileUploaded
                                                                     , 'Validate User Story'
                                                                     , this.selectedinputFormatOption
                                                                     , this.explainChecked);
+        }else{
+            parameterDetails = this.generateParameterWrapperDetails(this.selectedinputFormatOption
+                                                                    , this.userInput
+                                                                    , null
+                                                                    , 'Validate User Story'
+                                                                    , 'Text'
+                                                                    , this.explainChecked);
+        }
+
         console.log('parameter '+JSON.stringify(parameterDetails));    
         callLLM({parameterDetails:JSON.stringify(parameterDetails)})
         .then(result=>{
-            console.log(result);
+            console.log('Analyisresult=>'+JSON.stringify(result));
             this.response = result;
             console.log('GOKUL RESP '+result);
             this.formatValidateResponse(result);
@@ -400,7 +423,7 @@ export default class SDLCAnalysisPhase extends LightningElement {
 
     generateParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain){
         const utilityComp = this.template.querySelector('c-sdlc-utility');
-                return utilityComp.setParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain);
+        return utilityComp.setParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain);
     }
 
     async createFeedback(_actionName,_subActionName){

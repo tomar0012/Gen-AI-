@@ -6,42 +6,70 @@
   @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 -->
 <template>
-    <lightning-tabset variant="Scoped">
+    <lightning-tabset variant="Scoped" active-tab-value={activeTab}>
         <lightning-tab label="Start" onactive={handleActive} value="Start">
-            <c-sdlc-start-phase  onsave={handleSave} onavatarchange={handleAvatar} onrendered={handleRender}></c-sdlc-start-phase>
+            <c-sdlc-start-phase onsave={handleSave} onavatarchange={handleAvatar} onrendered={handleRender}
+                is-refresh-table={isRefreshTable}></c-sdlc-start-phase>
         </lightning-tab>
         <lightning-tab label="Analysis" onactive={handleActive}>
-            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
-            <c-sdlc-analysis-phase onuserstorysave={refreshUserStory} saved-user-stories={savedUserStories} tab-label={tabLabel} epic-id={epicID}></c-sdlc-analysis-phase>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon}
+                avatar-value={avatarValue}></c-sldc-banner>
+            <c-sdlc-analysis-phase onuserstorysave={refreshUserStory} saved-user-stories={savedUserStories}
+                tab-label={tabLabel} epic-id={epicID}></c-sdlc-analysis-phase>
         </lightning-tab>
         <lightning-tab label="Design" onactive={handleActive}>
-            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon}
+                avatar-value={avatarValue}></c-sldc-banner>
             <c-sdlc-design-phase saved-user-stories={savedUserStories} tab-label={tabLabel}></c-sdlc-design-phase>
         </lightning-tab>
-       
+
         <lightning-tab label="Build" onactive={handleActive}>
             <!-- <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue} received-epic={epicID}></c-sldc-banner> -->
             <c-sdlc-build-phase saved-user-stories={savedUserStories} received-epic={epicID}></c-sdlc-build-phase>
         </lightning-tab>
 
         <lightning-tab label="Test" onactive={handleActive}>
-            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon}
+                avatar-value={avatarValue}></c-sldc-banner>
             <c-sdlc-test-phase saved-user-stories={savedUserStories}></c-sdlc-test-phase>
         </lightning-tab>
 
         <lightning-tab label="Deploy" onactive={handleActive}>
-            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon}
+                avatar-value={avatarValue}></c-sldc-banner>
             <c-sdlc-deploy-phase></c-sdlc-deploy-phase>
         </lightning-tab>
 
         <lightning-tab label="Business Process Extraction" onactive={handleActive}>
-            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon}
+                avatar-value={avatarValue}></c-sldc-banner>
             <c-sdlc-business-process-extraction-phase></c-sdlc-business-process-extraction-phase>
         </lightning-tab>
 
         <lightning-tab label="Code Optimization" onactive={handleActive}>
-            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon} avatar-value={avatarValue}></c-sldc-banner>
+            <c-sldc-banner oncontextchange={setCurrentTab} project-context={projectContext} avatar-icon={avatarIcon}
+                avatar-value={avatarValue}></c-sldc-banner>
             <c-sdlc-code-optimization-phase></c-sdlc-code-optimization-phase>
         </lightning-tab>
     </lightning-tabset>
+    <template lwc:if={showAvatarPopup}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-label="Meaningful description of the modal content"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around_medium slds-modal__content_headless"
+                    id="modal-content-id-1">
+                    <p>
+                        You have unsaved changed.<br/>
+                        To continue, click on OK your changes will be lost.<br/>
+                        To go back, click on Cancel.
+                    </p>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button variant="brand" label="OK" onclick={handleAvatarOk} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Cancel" onclick={handleAvatarCancel} class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
 </template>

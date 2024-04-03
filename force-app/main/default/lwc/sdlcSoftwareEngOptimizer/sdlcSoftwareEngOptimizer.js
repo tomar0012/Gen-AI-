@@ -5,8 +5,12 @@ export default class SdlcSoftwareEngOptimizer extends LightningElement {
     tabLabel;
     avatarValue;
     avatarIcon;
+    isChangeAvatar;
+    previousContext;
     epicID='';
     isRenderd;
+    showAvatarPopup = false;
+    activeTab;
     @track savedUserStories;
     
     setCurrentTab(event){
@@ -16,7 +20,9 @@ export default class SdlcSoftwareEngOptimizer extends LightningElement {
     handleAvatar(event){
         this.avatarIcon = event.detail.icon;
         this.avatarValue = event.detail.value;
+        this.isChangeAvatar = event.detail.isAvatarChange;
     }
+
 
     handleRender(){
         this.isRenderd = true;
@@ -25,9 +31,29 @@ export default class SdlcSoftwareEngOptimizer extends LightningElement {
     //Reset data to default when the user switches or toggles between tabs.
     handleActive(event){
         this.tabLabel = event.target.label;
+        this.activeTab = '';
         console.log('LABEL '+this.tabLabel);
+        this.refreshTabData(this.tabLabel); 
+        if(!this.isChangeAvatar && this.tabLabel != "Start"){
+            console.log('Gokul Not saved avatar')
+            //this.showAvatarPopup = true;
+        } 
+    }
+
+    handleAvatarOk(event){
+        this.showAvatarPopup = false;
+        let component = this.template.querySelector('c-sdlc-start-phase');
+        component.refreshAvatar();
+    }
+
+    handleAvatarCancel(event){
+        this.showAvatarPopup = false;
+        this.activeTab = "Start";
+    }
+
+    refreshTabData(tabLabel){
         let component;
-        switch(this.tabLabel){
+        switch(tabLabel){
             case 'Start':
                 component = this.template.querySelector('c-sdlc-start-phase');
                 break;
@@ -54,6 +80,9 @@ export default class SdlcSoftwareEngOptimizer extends LightningElement {
                 break;
         }
         setTimeout(()=>{
+            if(tabLabel == 'Start'){
+                component.isRefreshTable = false;
+            }
             component.refreshData();
         },0);
     }

@@ -58,14 +58,25 @@ export default class LlmConfigTable extends LightningElement {
         console.log('Item -->'+event.currentTarget.dataset.item);
         console.log('Name -->'+event.target.name);
 
-                this.selectedLLM = event.target.value;
-              let llmConfigDataList=[...this.llmConfigDataList];
-                llmConfigDataList[event.target.name].llm = this.selectedLLM ;
-             //  llmConfigDataList[event.target.name].rating=this.llmFeedbackMap[this.selectedLLM];
-             
-                console.log('optionSelect ==>');            
-               this.llmConfigDataList=llmConfigDataList;
-               console.log('formattedData==>'+JSON.stringify(this.llmConfigDataList));
+        this.selectedLLM = event.target.value;
+        let llmConfigDataList=[...this.llmConfigDataList];
+        console.log('this '+JSON.stringify(llmConfigDataList[event.target.name].llmoptions));
+        let selectedLLMPopularityValue;
+        let selectedLLMRatingValue;
+        llmConfigDataList[event.target.name].llmoptions.forEach(record=>{
+            if(record.value == this.selectedLLM){
+                selectedLLMPopularityValue = record.popularity;
+                selectedLLMRatingValue = record.rating;
+            }
+        });
+        llmConfigDataList[event.target.name].llm = this.selectedLLM ;
+        //llmConfigDataList[event.target.name].rating=this.llmFeedbackMap[this.selectedLLM];
+        console.log('Change '+selectedLLMPopularityValue+'   '+selectedLLMRatingValue);
+        llmConfigDataList[event.target.name].popularity=selectedLLMPopularityValue;
+        llmConfigDataList[event.target.name].rating=selectedLLMRatingValue;
+        console.log('optionSelect ==>');            
+        this.llmConfigDataList=llmConfigDataList;
+        //console.log('formattedData==>'+JSON.stringify(this.llmConfigDataList));
         
     }
 

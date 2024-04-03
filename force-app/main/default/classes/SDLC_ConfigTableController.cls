@@ -80,7 +80,7 @@ public with sharing class SDLC_ConfigTableController {
         // Key = Phase + action + subActionName
         Map<String,ConfigurationTable__c> ConfigTableMap = new Map<String,ConfigurationTable__c>();
         
-        List<ConfigurationTable__c> configTableList = [SELECT Id, Name, Action__c, Active__c, Phase__c, LLM__c,LLM__r.Name, PromptLibrary__c, Prompt_With_Explanation__c, Sub_Action_Name__c, Action_Name__c
+        List<ConfigurationTable__c> configTableList = [SELECT Id, Name, Action__c, UsageCount__c, SDLC_Use_Percentage__c, Active__c, Phase__c, LLM__c,LLM__r.Name, PromptLibrary__c, Prompt_With_Explanation__c, Sub_Action_Name__c, Action_Name__c
                                                        FROM ConfigurationTable__c Order By Phase__c ASC];
         if(configTableList.size()>0){
             for(ConfigurationTable__c thisRecord :configTableList ){
@@ -121,8 +121,8 @@ public with sharing class SDLC_ConfigTableController {
                     summaryMap.put('subCategory', ConfigTableMap.get(thiskey).Sub_Action_Name__c);
                     summaryMap.put('llmoptions', totalOptionsMap.get(thiskey));
                     summaryMap.put('llm', defaultOptions.get(thiskey).value);
-                    summaryMap.put('popularity','90%');
-                    summaryMap.put('rating', '4');
+                    summaryMap.put('popularity',ConfigTableMap.get(thiskey).SDLC_Use_Percentage__c != Null ? String.ValueOf(ConfigTableMap.get(thiskey).SDLC_Use_Percentage__c +'%') : '0%');
+                    summaryMap.put('rating', ConfigTableMap.get(thiskey).UsageCount__c != Null ? ConfigTableMap.get(thiskey).UsageCount__c : 0);
                     dataMap.add(summaryMap);
                 }
                 

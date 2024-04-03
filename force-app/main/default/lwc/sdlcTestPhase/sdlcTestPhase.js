@@ -104,21 +104,20 @@ export default class TestPhase extends LightningElement {
             this.response = 'Sorry I\'m busy can you try later';
             this.isLoading = false;
         });*/
-        let parameterDetails = this.generateParameterWrapperDetails('Custom'
+        let parameterDetails = this.generateParameterWrapperDetails('custom'
                                                                     , this.snippetForTest
                                                                     , null
-                                                                    , 'Create Test Class'
+                                                                    , 'Create Test class'
                                                                     , 'Custom'
                                                                     , this.explainChecked);
         console.log('parameter '+JSON.stringify(parameterDetails));    
         callLLM({parameterDetails:JSON.stringify(parameterDetails)})
         .then(result=>{
-            console.log('result '+JSON.stringify(result));    
-
+            console.log('response '+result);
             this.testResponse = result;
+            this.createFeedback('Create Test class','Custom');
             this.isLoading = false;
         }).catch(error => {
-            console.log('test class error==>'+JSON.stringify(error));
             this.response = 'Sorry I\'m busy can you try later';
             this.isLoading = false;
         });
@@ -149,29 +148,8 @@ export default class TestPhase extends LightningElement {
     createTestcase(){
         this.errorMessage = '';
         this.isLoading = true;
-        /*_executePrompt({prompt:this.testPrompt,inputType:'Custom',userInput:this.testPlanInput,inputFile:null})
-        .then(result=>{
-            console.log('RESULTT TEST => '+result);
-            this.testCSVData = JSON.parse(result);
-            this.testCaseData = this.formatTestPlan(result) ;
-            console.log('result ==> data '+JSON.stringify(this.testCaseData));
-            if(this.testCaseData){
-                this.showTestCases = true;
-                this.isLoading = false;
-                this.showErrorMessage = false;
-                this.showGeneratedTable = true;
-            }
-        })
-        .catch(error=>{
-            console.log('ERROR => '+error.message);
-            this.errorMessage = '<b style="color:red;font-size:20px;text-align:center">Try Again!!</b>';
-            this.isLoading = false;
-            this.showErrorMessage = true;
-            this.showTestCases = false;
-            this.showGeneratedTable = true;
-        })*/
         this.showGeneratedTable = false;
-        let parameterDetails = this.generateParameterWrapperDetails('Custom'
+        let parameterDetails = this.generateParameterWrapperDetails('custom'
                                                                     , this.testPlanInput
                                                                     , null
                                                                     , 'Create Test plan'
@@ -184,6 +162,7 @@ export default class TestPhase extends LightningElement {
             this.testCSVData = JSON.parse(result);
             this.testCaseData = this.formatTestPlan(result) ;
             console.log('result ==> data '+JSON.stringify(this.testCaseData));
+            this.createFeedback('Create Test plan','Custom');
             if(this.testCaseData){
                 this.showTestCases = true;
                 this.isLoading = false;
@@ -276,5 +255,11 @@ export default class TestPhase extends LightningElement {
     generateParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain){
         const utilityComp = this.template.querySelector('c-sdlc-utility');
         return utilityComp.setParameterWrapperDetails(_inputType, _userInput, _inputFile, _actionName, _subActionName, _isExplain);
+    }
+
+    async createFeedback(_actionName,_subActionName){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        let result = await utilityComp.createFeedback(_actionName,_subActionName);
+        console.log('FEEDBACK cREATED '+result);
     }
 }
