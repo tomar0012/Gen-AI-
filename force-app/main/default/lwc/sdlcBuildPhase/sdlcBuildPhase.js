@@ -107,6 +107,7 @@ export default class SdlcBuildPhase extends LightningElement {
                 .then(result=>{
                     this.isGenResult = true
                     this.generatedLwcCode= result;
+                    this.createFeedback(CODE_GEN_PROMPT_ACTION,'Text');
                     this.isLoading = false;
                 }).catch(error => {
                     console.log('error==>'+JSON.stringify(error));
@@ -170,5 +171,11 @@ export default class SdlcBuildPhase extends LightningElement {
         } catch (error) {
             console.error(error);
         }
+    }
+
+    async createFeedback(_actionName,_subActionName){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        let result = await utilityComp.createFeedback(_actionName,_subActionName);
+        console.log('FEEDBACK cREATED '+result);
     }
 }

@@ -92,11 +92,11 @@
             <actionType>QuickAction</actionType>
             <sortOrder>2</sortOrder>
         </platformActionListItems>
-        <platformActionListItems>
+        <!-- <platformActionListItems>
             <actionName>UserStory__c.SyncWithJira</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>3</sortOrder>
-        </platformActionListItems>
+        </platformActionListItems> -->
     </platformActionList>
     <quickActionList/>
     <relatedLists>

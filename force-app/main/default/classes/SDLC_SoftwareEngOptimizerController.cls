@@ -1,6 +1,6 @@
 /*
 *********************************************************
-@Class Name      : SoftwareEngOptimizerController
+@Class Name      : SDLC_SoftwareEngOptimizerController
 @author          : COE-Arch
 @description     : This class handles various functionalities related to software engineering optimization.
 ********************************************************
@@ -24,6 +24,43 @@ public with sharing class SDLC_SoftwareEngOptimizerController {
 
     @AuraEnabled
     public static Boolean uploadCompletionImage(list<Object> filesToInsert,String parentid){
+     
+           /* list<Id> lstCntVerIds = new list<Id>();
+            list<Id> condocfiltered = new list<Id>();
+          
+            List<ContentVersion> lstVersionsToInsert = new List<ContentVersion>();
+          
+            for (Object file : filesToInsert) {
+                FileInfo fileData = (FileInfo)JSON.deserialize(JSON.serialize(file), FileInfo.class);
+                ContentVersion objCntVersion = new ContentVersion();
+                objCntVersion.PathOnClient = fileData.title;
+                objCntVersion.title = fileData.title;
+                objCntVersion.versionData = fileData.versionData;
+                lstVersionsToInsert.add(objCntVersion);
+            }
+            
+            list<Database.saveResult> res = Database.insert(lstVersionsToInsert);
+            for (Database.SaveResult saveResult : res) {
+                if(saveResult.isSuccess()) {
+                    lstCntVerIds.add(saveResult.getId());
+                }
+            }
+            List<ContentVersion> contenverlist = [select id,contentdocumentid,contentdocument.title from contentversion where id IN : lstCntVerIds ];
+            List<Contentdocumentlink> condoclink = new List<Contentdocumentlink>();
+            List<String> failedattach = new List<String>();
+            for(contentversion conver : contenverlist){
+                contentdocumentlink condoc = new contentdocumentlink();
+                condoc.ContentDocumentId = conver.contentdocumentid;
+                condoc.LinkedEntityId = parentid;
+                condoc.ShareType = 'V';
+                condoc.Visibility = 'AllUsers';
+                condoclink.add(condoc);
+            }
+            if(condoclink.size()>0){
+                Database.SaveResult[] condocupdated  = Database.insert(condoclink, false);
+               
+                update new Credential__c(id=parentid,Learning_Completion_Image__c=true);
+            }*/
             return true;
            
             
@@ -151,7 +188,7 @@ public with sharing class SDLC_SoftwareEngOptimizerController {
 
         Map<String, Integer> responseWithScore = new Map<String,Integer>{
             'Positive'=>10,
-            'Netural'=>5,
+            'Neutral'=>5,
             'Negative'=>0
         };
         Feedback__c feedback = new Feedback__c();
@@ -207,10 +244,10 @@ public with sharing class SDLC_SoftwareEngOptimizerController {
         }
 
         List<Object> promptList = new List<Object>();
-        AIHelper.addPrompt(promptList,'system','Hi, I am your SOftware Engineering Assistant.');
-        AIHelper.addPrompt(promptList,'user',context);
-        AIHelper.addPrompt(promptList,'user',prompt);
-        String requestBody=AIHelper.createRequestBody(promptList);
+        SDLC_AIHelper.addPrompt(promptList,'system','Hi, I am your SOftware Engineering Assistant.');
+        SDLC_AIHelper.addPrompt(promptList,'user',context);
+        SDLC_AIHelper.addPrompt(promptList,'user',prompt);
+        String requestBody=SDLC_AIHelper.createRequestBody(promptList);
         system.debug('requestBody==>'+requestBody);
 
         HttpRequest req = new HttpRequest();
@@ -238,6 +275,72 @@ public with sharing class SDLC_SoftwareEngOptimizerController {
         }
     }
     
+     /*
+    *********************************************************
+    @Method Name     : callLLM
+    @description    : Calls the LLM (Learning Library Management) API for processing.
+    @param inputType  : The type of input (Custom, CSV, etc.).
+    @param userInput  : User input for the prompt.
+    @param inputFile  : File input if applicable.
+    @param configId   : Configuration ID for LLM.
+    @param className  : Name of the LLM class.
+    @return           : The response from the LLM API.
+    ********************************************************
+
+    @AuraEnabled
+    public static String callLLM(String inputType, String userInput, Object inputFile, String configId, String className){
+
+        String llmResponse;
+        String context = formatInputLLM(inputType, userInput, inputFile);
+        Type llmClass = Type.forName(className);
+        LLMInterface llmInterface = (LLMInterface)llmClass.newInstance();
+        llmInterface.setLLMConfigId(configId);
+        llmInterface.setPromptContext(context);
+        LLMContext llcontext=new LLMContext(llmInterface);
+        try{
+            llmResponse = llcontext.processLLMRequest();
+        }
+        catch(Exception err){
+            system.debug('ERROR '+err);
+        }
+        
+
+        return llmResponse;
+    }
+    
+    *********************************************************
+    @Method Name     : formatInputLLM
+    @description    : Formats input for the LLM API based on input type.
+    @param inputType : The type of input (Custom, CSV, etc.).
+    @param userInput : User input for the prompt.
+    @param inputFile : File input if applicable.
+    @return          : The response for LLM processing.
+    ********************************************************
+
+
+    public static String formatInputLLM(String inputType, String userInput, Object inputFile){
+
+        String context;
+
+        if(inputType=='Custom'){
+            context=userInput;
+        }else if(inputType == 'CSV'){
+            context = processCSV((String)inputFile);
+        }else{
+            FileInfo fileData = (FileInfo)JSON.deserialize(JSON.serialize(inputFile), FileInfo.class);
+            system.debug('<==fileData==>'+fileData);
+            if(fileData.title.contains('.doc')){
+                context = EncodingUtil.base64Encode(fileData.versionData);
+                system.debug('context1==>'+context);
+
+            }else{
+            context=fileData.versionData.toString();
+            system.debug('context2==>'+context);
+            }
+        }
+
+        return context;
+    }    */
 
     /*
     *********************************************************
@@ -257,7 +360,7 @@ public with sharing class SDLC_SoftwareEngOptimizerController {
 
         String llmResponse;
 
-        system.debug('JSON String '+JSON.deserializeUntyped(parameterDetails));
+        system.debug('JSON String: '+JSON.deserializeUntyped(parameterDetails));
         SDLC_LLMParameterWrapper paramWrapper = (SDLC_LLMParameterWrapper)JSON.deserialize(parameterDetails,SDLC_LLMParameterWrapper.class);
         system.debug('para '+paramWrapper.isExplain);
         ConfigurationTable__c config = [Select Id
@@ -276,7 +379,7 @@ public with sharing class SDLC_SoftwareEngOptimizerController {
                                         AND Active__c=:true
                                         WITH USER_MODE
                                         LIMIT 1];
-        
+        system.debug('config from apex '+config);
         String context = formatInputLLM(paramWrapper.inputType, paramWrapper.userInput, paramWrapper.inputFile);
         Type llmClass = Type.forName(config.LLM__r.ClassName__c);
         SDLC_LLMInterface llmInterface = (SDLC_LLMInterface)llmClass.newInstance();
@@ -286,6 +389,7 @@ public with sharing class SDLC_SoftwareEngOptimizerController {
         SDLC_LLMContext llcontext=new SDLC_LLMContext(llmInterface);
         try{
             llmResponse = llcontext.processLLMRequest();
+            system.debug('llmResponse: '+llmResponse);
         }
         catch(Exception err){
             system.debug('ERROR '+err);
@@ -312,7 +416,7 @@ public with sharing class SDLC_SoftwareEngOptimizerController {
         if(inputType=='Custom'){
             context=userInput;
         }else if(inputType == 'CSV'){
-            context = processCSV(inputFile);
+            context = processCSV((String)inputFile);
         }else{
             FileInfo fileData = (FileInfo)JSON.deserialize(inputFile, FileInfo.class);
             system.debug('<==fileData==>'+fileData);

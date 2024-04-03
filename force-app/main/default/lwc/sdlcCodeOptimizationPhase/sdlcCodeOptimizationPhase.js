@@ -70,9 +70,10 @@ export default class SdlcCodeOptimizationPhase extends LightningElement { isLoad
 
         callLLM({parameterDetails:JSON.stringify(parameterDetails)})
         .then(result=>{
-            console.log('result-->'+result);
+            console.log(result);
             this.optimizationResponse = result;
             this.isLoading = false;
+            this.createFeedback('Generate Code quality assessment','Text');
             this.buttons.qualityCheckButton = 'neutral';
             this.buttons.dmlCheckButton = 'brand';
             this.buttons.soqlCheckButton = 'brand';
@@ -139,6 +140,7 @@ export default class SdlcCodeOptimizationPhase extends LightningElement { isLoad
         .then(result=>{
             this.optimizationResponse = result;
             this.isLoading = false;
+            this.createFeedback('Generate DML','Text');
             this.buttons.qualityCheckButton = 'brand';
             this.buttons.dmlCheckButton = 'neutral';
             this.buttons.soqlCheckButton = 'brand';
@@ -169,6 +171,7 @@ export default class SdlcCodeOptimizationPhase extends LightningElement { isLoad
                 .then(result=>{
                     this.optimizationResponse = result;
                     this.isLoading = false;
+                    this.createFeedback('Generate SOQL','Text');
                     this.buttons.qualityCheckButton = 'brand';
                     this.buttons.dmlCheckButton = 'brand';
                     this.buttons.soqlCheckButton = 'neutral';
@@ -197,4 +200,11 @@ export default class SdlcCodeOptimizationPhase extends LightningElement { isLoad
             this.optimizationResponse = this.errorMessage;
             this.isLoading = false;
         }
-    }}
+    }
+
+    async createFeedback(_actionName,_subActionName){
+        const utilityComp = this.template.querySelector('c-sdlc-utility');
+        let result = await utilityComp.createFeedback(_actionName,_subActionName);
+        console.log('FEEDBACK cREATED '+result);
+    }
+}

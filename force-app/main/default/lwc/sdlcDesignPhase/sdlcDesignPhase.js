@@ -1,3 +1,9 @@
+/*******************************
+*@name          SdlcDesignPhase
+*@description   LWC component for AI Force App's Design Tab
+*@author        COE
+*@created Date  2024
+**********************************/
 import { LightningElement,api,track,wire} from 'lwc';
 import _executePrompt from '@salesforce/apex/SDLC_InfyAIForceUtility.executePrompt';
 import insertComponentSpecificationRecord from '@salesforce/apex/SDLC_DesignController.insertComponentSpecificationRecord';
@@ -41,7 +47,7 @@ export default class SdlcDesignPhase extends LightningElement {
         this.showFeedback = false;
     }
     
-    @wire(getConfigurationDetails,{phase:'$tabLabel'})
+    /*@wire(getConfigurationDetails,{phase:'$tabLabel'})
     wiredConfigurationDetails({data,error}){
         if(data){
             this.configurationRecords = data;
@@ -50,10 +56,11 @@ export default class SdlcDesignPhase extends LightningElement {
         else if(error){
             console.log('ERROR '+error)
         }
-    }
+    }*/
 
     getSelectedRows(event) {
         this.selectedRows = event.detail.selectedRows;
+        console.log('Details -->'+JSON.stringify(event.detail));
         this.selectedRowIds = [];
         console.log('this.selectedRows =>',JSON.stringify(this.selectedRows));
         if(Object.keys(this.selectedRows).length > 0){
@@ -77,9 +84,8 @@ export default class SdlcDesignPhase extends LightningElement {
     
     createDesign(){
         console.log('STARTING DESIGN SPEC');
-        this.assignPromptAndLLM();
+        //this.assignPromptAndLLM();
         this.executeComponentSpecificationPrompt();
-        //this.createFeedbackRecord();
     }
 
     assignPromptAndLLM(){
@@ -158,6 +164,7 @@ export default class SdlcDesignPhase extends LightningElement {
                 });
                 this.dispatchEvent(evt);
                 this.isLoading = false;
+                this.isSavedComponentSpec = true;
             })
             .catch(error=>{
                 console.log('ERROR -->'+error.message);

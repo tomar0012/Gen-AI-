@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track,api } from 'lwc';
 import getAllUserLicesnse from '@salesforce/apex/SDLC_InfyAIForceUtility.getAllUserLicesnse';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getAllEngagement from '@salesforce/apex/SDLC_InfyAIForceUtility.getAllEngagement';
@@ -20,7 +20,7 @@ export default class SdlcStartPhase extends LightningElement {
     firstName;
     selectedEpicLabel;
     isSelectedEpic = false;
-    @track avatarContext = { value: "Business Analyst", icon: BA_PIC };
+    @track avatarContext = { value: "Business Analyst", icon: BA_PIC, isAvatarChange: false };
     selectedProductLabel;
     isSelectedProduct = false;
     selectedPortfolioLabel;
@@ -37,17 +37,47 @@ export default class SdlcStartPhase extends LightningElement {
     selectedEpicId = this.defaultEpic;
     defaultLicenses = DEFAULT_LICENSE;
     avatarOptions = avatarOptions();
+    isAvatarChanged = false;
+    previousContext;
 
     handleSelectedAvatar(event) {
         try {
             let iconName;
+            this.previousContext = this.avatarContext;
             this.avatarOptions.forEach(record => {
                 iconName = (record.value == event.target.value) ? record.icon : iconName;
             });
-            this.avatarContext = { value: event.target.value, icon: iconName };
+            this.avatarContext = { value: event.target.value, icon: iconName, isAvatarChange:false };
+            //this.dispatchEvent(new CustomEvent("previouscontext", { detail: this.previousContext }));
+            this.dispatchEvent(new CustomEvent("avatarchange", { detail: this.avatarContext }));
         } catch (error) {
             console.error(error);
         }
+    }
+
+    @api refreshAvatar(){
+        console.log('INTO Options')
+        let options = avatarOptions();
+        options.forEach(record => {
+            record.checked = (record.value == this.previousContext.value) ? true: false;
+        });
+        this.avatarOptions = options;
+        this.previousContext.isAvatarChange = true;
+        this.dispatchEvent(new CustomEvent("avatarchange", { detail: this.previousContext }));
+        console.log('Options '+JSON.stringify(options))
+    }
+
+    @api isRefreshTable;
+    @api
+    refreshData(){
+
+       let llmTableComp = this.template.querySelector('c-llm-config-table');
+        setInterval(() => {
+            if(!this.isRefreshTable){
+                llmTableComp.refreshLLMTable();
+                this.isRefreshTable = true;
+            }
+        }, 0);
     }
 
     //fetches current user's name
@@ -56,6 +86,7 @@ export default class SdlcStartPhase extends LightningElement {
         try {
             if (data) {
                 this.firstName = data[0].Name;
+                //this.refreshTable();
             } else if (error) {
                 console.log('error fetching user' + JSON.stringify(error));
             }
@@ -93,7 +124,7 @@ export default class SdlcStartPhase extends LightningElement {
     handleSave() {
         try {
             const projectContext = { engagement: this.selectedEngagementLabel ? this.selectedEngagementLabel : 'Infosys', portfolio: this.selectedPortfolioLabel,
-                product: this.selectedProductLabel, epic: this.selectedEpicLabel, productId: this.selectedProductId, portfolioId: this.selectedPortfolioId, engagementId: this.selectedEngagementId, epicId: this.selectedEpicId }
+            product: this.selectedProductLabel, epic: this.selectedEpicLabel, productId: this.selectedProductId, portfolioId: this.selectedPortfolioId, engagementId: this.selectedEngagementId, epicId: this.selectedEpicId }
             const save = new CustomEvent("save", { detail: projectContext });
             this.dispatchEvent(save);
             const event = new ShowToastEvent({
@@ -102,6 +133,7 @@ export default class SdlcStartPhase extends LightningElement {
                 variant: 'success',
             });
             this.dispatchEvent(event);
+            this.avatarContext.isAvatarChange = true;
             this.dispatchEvent(new CustomEvent("avatarchange", { detail: this.avatarContext }));
             this.dispatchEvent(new CustomEvent("rendered"));
         } catch (error) {
